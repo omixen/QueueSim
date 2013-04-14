@@ -10,7 +10,6 @@ public class Queue implements Runnable {
 	
 	private ArrayList<Customer> customers;
 	private ArrayList<String> type;
-	//private string type;
 	private long sleepTime;
 	
 	public Queue() {
