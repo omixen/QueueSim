@@ -6,11 +6,11 @@ import java.util.Iterator;
 /**
  *
  */
-public class Queue implements Runnable {
+public class Queue 
+{
 	
 	private ArrayList<Customer> customers;
 	private ArrayList<String> type;
-	private long sleepTime;
 	
 	public Queue() {
 		customers = new ArrayList<Customer>();
@@ -35,16 +35,6 @@ public class Queue implements Runnable {
 		}
 	}
 	
-	public long getSleepTime() 
-	{
-        return sleepTime;
-    }
-
-    public void setSleepTime(long sleepTime) 
-    {
-        this.sleepTime = sleepTime;
-    }
-	
 	public ArrayList<Customer> getCustomers()
 	{
 		return customers;
@@ -54,15 +44,6 @@ public class Queue implements Runnable {
 	{
 		this.customers = c;
 	}
-	
-	public void run() {
-        try {
-            Thread.sleep(this.sleepTime);
-
-        } catch(InterruptedException ie) {
-            ie.printStackTrace();
-        }
-    }
 	
 	public int getLength()
 	{
