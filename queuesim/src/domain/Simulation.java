@@ -39,9 +39,9 @@ public class Simulation {
     
     public void run(){
         
-        this.dispatcher.run();
+        this.dispatcher.run() ;
         
-    }
+    } 
     
     
     
