@@ -1,5 +1,5 @@
 package domain;
-
+import java.util.ArrayList;
 /**
  *
  * + Customer.Type[] customerTypes : may accept multiple customer types
@@ -17,50 +17,50 @@ public class ServiceStation {
 	private ArrayList<Queue> accessibleQueues;
 	
 	
-	public getCustomer(Customer customer){
+//	public void getCustomer(Customer customer){
+//		
+//		this.currentCustomer = customer;
+//		
+//	}
+	
+	public void removeCustomer(Queue queue){
 		
-		this.currentCustomer = customer;
 		
 	}
 	
-	public removeCustomer(Queue queue){
-		
-		
-	}
-	
-	public addAccessibleQueue(Queue queue){
+	public void addAccessibleQueue(Queue queue){
 		
 		this.accessibleQueues.add(queue);
 		
 	}
 	
-	public remAccessibleQueue(Queue queue){
+	public void remAccessibleQueue(Queue queue){
 		
 		// Whats the best way to add/remove objects in Java?
 		// this.accessibleQueues.remove(queue);
 		
 	}
 	
-	public setCurrentCustomer(Customer customer){
+	public void setCurrentCustomer(Customer customer){
 		
 		this.currentCustomer = customer;
 	}
 	
-	public getCurrentCustomer() {
+	public Customer getCurrentCustomer() {
 		
 		return this.currentCustomer;
 		
 	}
 
-	public setCustomerTypes(ArrayList<> customerTypes) {
-		
-		this.customerTypes = customerTypes;
-	}
-	
-	public getCustomerTypes() {
-		
-		return this.customerTypes;
-	}
+//	public void setCustomerTypes(ArrayList<> customerTypes) {
+//		
+//		this.customerTypes = customerTypes;
+//	}
+//	
+//	public getCustomerTypes() {
+//		
+//		return this.customerTypes;
+//	}
 	
 	
 	
