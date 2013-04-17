@@ -64,9 +64,9 @@ public class Dispatcher implements Runnable {
         Iterator<Queue> iter = this.queues.iterator();
         while(iter.hasNext()) {
             Queue q = iter.next();
-            if(q.getType() == type && (temp == null  || q.getLength()<temp.getLength())) {
-                temp = q;
-            }
+//            if(q.getType() == type && (temp == null  || q.getLength()<temp.getLength())) {
+//                temp = q;
+//            }
         }
         return temp;
     }
