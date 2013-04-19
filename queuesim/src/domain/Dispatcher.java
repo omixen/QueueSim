@@ -49,10 +49,51 @@ public class Dispatcher implements Runnable {
     public void run() {
         try {
             Thread.sleep(this.sleepTime);
+            
+            Long time = System.currentTimeMillis();
+            
+            Customer customer = dispatch(time);
+            
+            if (customer != null) {
+                
+                enQueue(customer);
+                
+            } 
 
         } catch(InterruptedException ie) {
             ie.printStackTrace();
         }
+    }
+    
+    public Customer dispatch(Long time) {
+        
+        // Random num between 1 and 10
+        Integer rand = 0 + (int)(Math.random() * ((10 - 0) + 1));
+        
+        // this is where we would inject arrival distribution
+        if (time % rand == 0) {
+            
+            Customer c = new Customer();
+            
+            c.setType("TYPE");
+            
+            return c;
+            
+        } else {
+            
+            
+            return null;
+        }
+
+    }
+    
+    public boolean enQueue(Customer customer) {
+        
+        // This is where we would inject Dispatching Policy
+        
+        
+        
+        return true;
     }
 
     public ArrayList<Customer> createCustomers() {
