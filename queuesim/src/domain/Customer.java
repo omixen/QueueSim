@@ -1,8 +1,16 @@
 package domain;
 
+/*
+ * Class Customer
+ * Represent a customer that being dispatched by the dispatcher,
+ * inserted into queues, and serviced by the service stations
+ * id: short string that uniquely identifies this customer
+ * type: customer type, assigned by dispatcher during dispatching
+ * arrivalTime: set by dispatcher during dispatching, used in calculating total time by observer
+ */
 public class Customer {
     private String id;
-    private String type;
+    private CustomerType type;
     private int arrivalTime;
 
     public String getId() {
@@ -13,11 +21,11 @@ public class Customer {
         this.id = id;
     }
 
-    public String getType() {
+    public CustomerType getType() {
         return type;
     }
 
-    public void setType(String type) {
+    public void setType(CustomerType type) {
         this.type = type;
     }
 
