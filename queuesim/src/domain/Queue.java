@@ -9,25 +9,32 @@ import java.util.Iterator;
 public class Queue {
 
     private ArrayList<Customer> customers;
-    private ArrayList<String> type;
+    private ArrayList<CustomerType> customerTypes;
 
     public Queue() {
         customers = new ArrayList<Customer>();
-        type = new ArrayList<String>();
+        customerTypes = new ArrayList<CustomerType>();
     }
 
-    public ArrayList<String> getType() {
-        return type;
+    public ArrayList<CustomerType> getType() {
+        return customerTypes;
     }
 
-    public void setType(ArrayList<String> type) {
-        this.type = type;
+    public void setType(ArrayList<CustomerType> type) {
+        this.customerTypes = type;
     }
 
-    public void addType(String t) {
+    public void addType(CustomerType t) {
         if (t != null) {
-            type.add(t);
+            customerTypes.add(t);
         }
+    }
+
+    public boolean hasType(CustomerType t) {
+        if(customerTypes.contains(t)) {
+            return true;
+        }
+        return false;
     }
 
     public ArrayList<Customer> getCustomers() {

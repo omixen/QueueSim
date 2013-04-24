@@ -4,12 +4,15 @@ import java.util.ArrayList;
 import java.util.Iterator;
 
 /**
- *
+ *  Abstract Class Dispatcher
+ *  Base class for all dispatchers
  */
-public class Dispatcher implements Runnable {
+public abstract class Dispatcher implements Runnable {
     private float arrivalRate;
     private long sleepTime;
     private ArrayList<Queue> queues;
+    private ArrayList<CustomerType> customerTypes;
+    private boolean running = true;
 
     public float getArrivalRate() {
         return arrivalRate;
@@ -19,7 +22,7 @@ public class Dispatcher implements Runnable {
         this.arrivalRate = arrivalRate;
     }
 
-    public float getSleepTim() {
+    public float getSleepTime() {
         return sleepTime;
     }
 
@@ -41,9 +44,12 @@ public class Dispatcher implements Runnable {
         }
     }
 
-    public Dispatcher() {
-        this.setArrivalRate(0);
-        this.setQueues(new ArrayList<Queue>());
+    public ArrayList<CustomerType> getCustomerTypes() {
+        return customerTypes;
+    }
+
+    public void setCustomerTypes(ArrayList<CustomerType> customerTypes) {
+        this.customerTypes = customerTypes;
     }
 
     public void run() {
@@ -52,12 +58,10 @@ public class Dispatcher implements Runnable {
             
             Long time = System.currentTimeMillis();
             
-            Customer customer = dispatch(time);
+            Customer[] customers = dispatch(time);
             
-            if (customer != null) {
-                
-                enQueue(customer);
-                
+            if (customers != null) {
+                assignCustomers(customers);
             } 
 
         } catch(InterruptedException ie) {
@@ -65,51 +69,28 @@ public class Dispatcher implements Runnable {
         }
     }
     
-    public Customer dispatch(Long time) {
-        
-        // Random num between 1 and 10
-        Integer rand = 0 + (int)(Math.random() * ((10 - 0) + 1));
-        
-        // this is where we would inject arrival distribution
-        if (time % rand == 0) {
-            
-            Customer c = new Customer();
-            
-            c.setType("TYPE");
-            
-            return c;
-            
-        } else {
-            
-            
-            return null;
+    public void assignCustomers(Customer[] customers) {
+        for(int i=0;i<customers.length;i++) {
+            getQueue(customers[i].getType()).enqueue(customers[i]);
         }
-
-    }
-    
-    public boolean enQueue(Customer customer) {
-        
-        // This is where we would inject Dispatching Policy
-        
-        
-        
-        return true;
     }
 
-    public ArrayList<Customer> createCustomers() {
-        return null;
-    }
-
-    public Queue getQueue(String type) {
+    public Queue getQueue(CustomerType type) {
+        /*
+         * The logic here
+         * get queue with the least amount of customers of type
+         * if all the same we pick the first one
+         */
         Queue temp = null;
         Iterator<Queue> iter = this.queues.iterator();
         while(iter.hasNext()) {
             Queue q = iter.next();
-//            if(q.getType() == type && (temp == null  || q.getLength()<temp.getLength())) {
-//                temp = q;
-//            }
+            if(q.hasType(type) && (temp == null  || q.getLength()<temp.getLength())) {
+                temp = q;
+            }
         }
         return temp;
     }
 
+    abstract public Customer[] dispatch(Long time);
 }

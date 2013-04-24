@@ -1,5 +1,6 @@
 package domain;
 
+import java.util.UUID;
 /*
  * Class Customer
  * Represent a customer that being dispatched by the dispatcher,
@@ -11,7 +12,7 @@ package domain;
 public class Customer {
     private String id;
     private CustomerType type;
-    private int arrivalTime;
+    private long arrivalTime;
 
     public String getId() {
         return id;
@@ -29,11 +30,17 @@ public class Customer {
         this.type = type;
     }
 
-    public int getArrivalTime() {
+    public long getArrivalTime() {
         return arrivalTime;
     }
 
-    public void setArrivalTime(int arrivalTime) {
+    public void setArrivalTime(long arrivalTime) {
         this.arrivalTime = arrivalTime;
+    }
+
+    public Customer(CustomerType type, long arrivalTime) {
+        this.setId(UUID.randomUUID().toString());
+        this.setType(type);
+        this.setArrivalTime(arrivalTime);
     }
 }
