@@ -1,6 +1,8 @@
 package domain;
 
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Hashtable;
 import java.util.Iterator;
 
 /**
@@ -11,7 +13,7 @@ public abstract class Dispatcher implements Runnable {
     private float arrivalRate;
     private long sleepTime;
     private ArrayList<Queue> queues;
-    private ArrayList<CustomerType> customerTypes;
+    private Hashtable<CustomerType, Integer> customers;
     private boolean running = true;
 
     public float getArrivalRate() {
@@ -45,11 +47,7 @@ public abstract class Dispatcher implements Runnable {
     }
 
     public ArrayList<CustomerType> getCustomerTypes() {
-        return customerTypes;
-    }
-
-    public void setCustomerTypes(ArrayList<CustomerType> customerTypes) {
-        this.customerTypes = customerTypes;
+        return Collections.list(this.customers.keys());
     }
 
     public void run() {
