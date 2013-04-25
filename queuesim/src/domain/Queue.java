@@ -63,6 +63,7 @@ public class Queue {
                 String t = c.getType().getName();
                 if (type.getName().equals(t)) 
                 {
+                    custIter.remove();
                     return c;   
                 }
             }
