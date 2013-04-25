@@ -55,20 +55,18 @@ public class Queue {
         }
     }
 
-    public Customer dequeue(String type) {
-//        if (type != null) {
-//            Iterator<Customer> custIter = customers.iterator();
-//            while (custIter.hasNext()) {
-//                Customer c = custIter.next();
-//                Iterator<String> typeIter = c.getType().iterator();
-//                while (typeIter.hasNext()) {
-//                    String t = typeIter.next();
-//                    if (type.equals(t)) {
-//                        return c;
-//                    }
-//                }
-//            }
-//        }
+   public Customer dequeue(String type) {
+        if (type != null) {
+            Iterator<Customer> custIter = customers.iterator();
+            while (custIter.hasNext()) {
+                Customer c = custIter.next();
+                String t = c.getType().getName();
+                if (type.equals(t)) 
+                {
+                        return c;   
+                }
+            }
+        }
         return null;
     }
 }
