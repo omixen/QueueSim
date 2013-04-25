@@ -55,15 +55,15 @@ public class Queue {
         }
     }
 
-   public Customer dequeue(String type) {
+   public Customer dequeue(CustomerType type) {
         if (type != null) {
             Iterator<Customer> custIter = customers.iterator();
             while (custIter.hasNext()) {
                 Customer c = custIter.next();
                 String t = c.getType().getName();
-                if (type.equals(t)) 
+                if (type.getName().equals(t)) 
                 {
-                        return c;   
+                    return c;   
                 }
             }
         }
