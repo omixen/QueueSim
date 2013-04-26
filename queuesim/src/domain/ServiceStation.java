@@ -89,8 +89,8 @@ public class ServiceStation {
     public void run() {
         try {
             Thread.sleep(this.sleepTime);
-            
-            Long time = System.currentTimeMillis();
+            getNextCustomer();
+            //Long time = System.currentTimeMillis();
 
         } catch(InterruptedException ie) {
             ie.printStackTrace();
