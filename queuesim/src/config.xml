@@ -1,0 +1,77 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+Simulation variable names:
+begin_time : an actual date time which will be used in the report
+time_unit : number of seconds represented by each tick
+tick : 0.5 second (actual wake up distance for dispatcher)
+timeout : number of seconds until timeount
+arrival_rate : a floating number used in calculating customer arrival (optional)
+dispatching_policy: a few distribution function names will instantiate different Dispatcher class
+
+Array of objects will be created for these:
+
+types : define type and description
+queue types : assigning types to queue
+service_station types queues : assigning queues and types to service station
+-->
+
+
+<root>
+
+    <settings>    
+            <property id="begin_time">value</property>
+            <property id="time_unit">1</property>
+            <property id="tick">0.5</property>
+            <property id="timeout">3600</property>
+            <property id="arrival_rate">0.3</property>
+            <property id="dispatching_policy">default</property>
+    </settings>
+    
+    <types>
+        <customer_types>
+            <cusomter_type id="GENERAL">
+                <property id="property1">1</property>
+                <property id="property2">22</property>
+            </cusomter_type>
+            <cusomter_type id="VIP">
+                <property id="property1">2</property>
+            </cusomter_type>
+        </customer_types>
+        <service_station_types>
+            <service_station_type id="EXPRESS">
+                    <property id="property1">3</property>
+                     <property id="property2">3</property>
+            </service_station_type>
+            <service_station_type id="STANDARD">
+                    <property id="property1">4</property>
+            </service_station_type>
+        </service_station_types>
+    </types>
+    
+    <queues>
+        <queue id="queueA">
+            <property id="property1">3</property>
+        </queue>
+        <queue id="queueB">
+            <property id="property1">3</property>
+        </queue>
+    </queues>
+
+    <service_stations>
+        <service_station id="ss1" type="EXPRESS">        
+            <assigned_queue id="1">queueA</assigned_queue>
+            <assigned_queue id="2">queueB</assigned_queue>
+            <allowed_customer_type id="1">VIP</allowed_customer_type>
+            <allowed_customer_type id="2">GENERAL</allowed_customer_type>
+        </service_station>
+        <service_station id="ss2" type="STANDARD">
+            <assigned_queue id="1">queueA</assigned_queue>
+            <allowed_customer_type id="1">GENERAL</allowed_customer_type>
+        </service_station>
+        <service_station id="ss3" type="STANDARD">
+            <assigned_queue id="1">queueB</assigned_queue>
+            <allowed_customer_type id="1">VIP</allowed_customer_type>
+        </service_station> 
+    </service_stations>
+    
+</root>
