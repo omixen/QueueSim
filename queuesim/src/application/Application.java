@@ -52,7 +52,7 @@ public class Application {
 
 		//init with 50 express customers and 50 regular customers
         SimpleDispatcher dispatcher = new SimpleDispatcher(1, 10);
-        dispatcher.run();
+        dispatcher.start();
 	}
 	
 	

@@ -19,7 +19,7 @@ public class GaussianDispatcher extends Dispatcher {
     }
 
     public Customer[] dispatch(Long time) {
-        double timeNumber = time/1000;
+        //timeNumber time in the specified tick unit
         ArrayList<Customer> customers = new ArrayList<Customer>();
         int number = 0;
 
@@ -28,8 +28,12 @@ public class GaussianDispatcher extends Dispatcher {
             String type = keys.nextElement().toString();
             CustomerType customerType = this.getCustomerTypes().get(type);
             //gaussion function
-            number = (int)(a*(Math.pow(Math.E, -(Math.pow(timeNumber-b, 2)/(2*Math.pow(c, 2))))));
-
+            number = (int)(a*(Math.pow(Math.E, -(Math.pow(time-b, 2)/(2*Math.pow(c, 2))))));
+            //spawn customers of this type and add to customer list
+            Customer[] customersOfType = customerType.spawn(number, time);
+            for(Customer x : customersOfType) {
+                customers.add(x);
+            }
         }
         return customers.toArray(new Customer[customers.size()]);
     }

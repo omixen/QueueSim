@@ -20,11 +20,13 @@ public class SimpleDispatcher extends Dispatcher {
     public Customer[] dispatch(Long time) {
         ArrayList<Customer> customers = new ArrayList<Customer>();
         int rand = 0;
+        String type = null;
+        CustomerType customerType = null;
         //create number of customers based on the customer type distribution
         Enumeration keys = this.getCustomerTypes().keys();
         while(keys.hasMoreElements()) {
-            String type = keys.nextElement().toString();
-            CustomerType customerType = this.getCustomerTypes().get(type);
+            type = keys.nextElement().toString();
+            customerType = this.getCustomerTypes().get(type);
             rand = minCount + (int)(Math.random() * ((maxCount - minCount) + 1));
             //spawn customers of this type and add to customer list
             Customer[] customersOfType = customerType.spawn(rand, time);

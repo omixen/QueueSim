@@ -19,7 +19,8 @@ public class ServiceStation {
 	private ArrayList<String> customerTypes;
 	private Customer customer;
 	private ArrayList<Queue> queues;
-	private long sleepTime;
+	private long sleepTime = 1000;
+    private boolean open = true;
 	
 	public ServiceStation()
 	{
@@ -104,10 +105,11 @@ public class ServiceStation {
     
     public void run() {
         try {
-            Thread.sleep(this.sleepTime);
-            getNextCustomer();
-            //Long time = System.currentTimeMillis();
-
+            while(open) {
+                //Long time = System.currentTimeMillis();
+                getNextCustomer();
+                Thread.sleep(this.sleepTime);
+            }
         } catch(InterruptedException ie) {
             ie.printStackTrace();
         }
