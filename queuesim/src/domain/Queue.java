@@ -2,26 +2,40 @@ package domain;
 
 import java.util.ArrayList;
 import java.util.Iterator;
+import java.util.UUID;
 
 /**
  *
  */
 public class Queue {
-
+    private String id;
     private ArrayList<Customer> customers;
     private ArrayList<CustomerType> customerTypes;
 
     public Queue() {
-        customers = new ArrayList<Customer>();
-        customerTypes = new ArrayList<CustomerType>();
+        this(UUID.randomUUID().toString(), new ArrayList<CustomerType>());
+    }
+
+    public Queue(String id, ArrayList<CustomerType> types) {
+        this.setId(id);
+        this.setTypes(types);
+        this.setCustomers(new ArrayList<Customer>());
+    }
+
+    public String getId() {
+        return id;
+    }
+
+    public void setId(String id) {
+        this.id = id;
     }
 
     public ArrayList<CustomerType> getType() {
         return customerTypes;
     }
 
-    public void setType(ArrayList<CustomerType> type) {
-        this.customerTypes = type;
+    public void setTypes(ArrayList<CustomerType> types) {
+        this.customerTypes = types;
     }
 
     public void addType(CustomerType t) {

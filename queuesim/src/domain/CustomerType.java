@@ -13,6 +13,12 @@ public class CustomerType {
     private String description;
     private int serviceTime;
 
+    public CustomerType(String name, String description, int serviceTime) {
+        this.setName(name);
+        this.setDescription(description);
+        this.setServiceTime(serviceTime);
+    }
+
     public String getName() {
         return name;
     }

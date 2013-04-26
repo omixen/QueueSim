@@ -14,6 +14,12 @@ public class Customer {
     private CustomerType type;
     private long arrivalTime;
 
+    public Customer(CustomerType type, long arrivalTime) {
+        this.setId(UUID.randomUUID().toString());
+        this.setType(type);
+        this.setArrivalTime(arrivalTime);
+    }
+
     public String getId() {
         return id;
     }
@@ -36,11 +42,5 @@ public class Customer {
 
     public void setArrivalTime(long arrivalTime) {
         this.arrivalTime = arrivalTime;
-    }
-
-    public Customer(CustomerType type, long arrivalTime) {
-        this.setId(UUID.randomUUID().toString());
-        this.setType(type);
-        this.setArrivalTime(arrivalTime);
     }
 }

@@ -1,6 +1,8 @@
 package domain;
 import java.util.ArrayList;
 import java.util.Iterator;
+import java.util.UUID;
+
 /**
  *
  * + Customer.Type[] customerTypes : may accept multiple customer types
@@ -13,18 +15,32 @@ import java.util.Iterator;
  *
  */
 public class ServiceStation {
-	private ArrayList<CustomerType> customerTypes;  						// enum instead?
+    private String id;
+	private ArrayList<CustomerType> customerTypes;
 	private Customer customer;
 	private ArrayList<Queue> queues;
 	private long sleepTime;
 	
 	public ServiceStation()
 	{
-		customerTypes = new ArrayList<CustomerType>();
-		queues = new ArrayList<Queue>();
-		sleepTime = 0;
+		this(UUID.randomUUID().toString(), new ArrayList<CustomerType>(), new ArrayList<Queue>());
 	}
-	
+
+    public ServiceStation(String id, ArrayList<CustomerType> customerTypes, ArrayList<Queue> queues) {
+        this.setId(id);
+        this.setTypes(customerTypes);
+        this.setQueues(queues);
+        this.setSleepTime(0);
+    }
+
+    public String getId() {
+        return id;
+    }
+
+    public void setId(String id) {
+        this.id = id;
+    }
+
 	public ArrayList<CustomerType> getTypes() {
 		return customerTypes;
 	}
