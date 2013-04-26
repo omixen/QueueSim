@@ -11,10 +11,10 @@ import java.util.UUID;
  */
 public class Customer {
     private String id;
-    private CustomerType type;
+    private String type;
     private long arrivalTime;
 
-    public Customer(CustomerType type, long arrivalTime) {
+    public Customer(String type, long arrivalTime) {
         this.setId(UUID.randomUUID().toString());
         this.setType(type);
         this.setArrivalTime(arrivalTime);
@@ -28,12 +28,16 @@ public class Customer {
         this.id = id;
     }
 
-    public CustomerType getType() {
+    public String getType() {
         return type;
     }
 
-    public void setType(CustomerType type) {
+    public void setType(String type) {
         this.type = type;
+    }
+
+    public void setType(CustomerType type) {
+        this.type = type.getName();
     }
 
     public long getArrivalTime() {

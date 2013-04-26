@@ -16,17 +16,17 @@ import java.util.UUID;
  */
 public class ServiceStation {
     private String id;
-	private ArrayList<CustomerType> customerTypes;
+	private ArrayList<String> customerTypes;
 	private Customer customer;
 	private ArrayList<Queue> queues;
 	private long sleepTime;
 	
 	public ServiceStation()
 	{
-		this(UUID.randomUUID().toString(), new ArrayList<CustomerType>(), new ArrayList<Queue>());
+		this(UUID.randomUUID().toString(), new ArrayList<String>(), new ArrayList<Queue>());
 	}
 
-    public ServiceStation(String id, ArrayList<CustomerType> customerTypes, ArrayList<Queue> queues) {
+    public ServiceStation(String id, ArrayList<String> customerTypes, ArrayList<Queue> queues) {
         this.setId(id);
         this.setTypes(customerTypes);
         this.setQueues(queues);
@@ -41,11 +41,11 @@ public class ServiceStation {
         this.id = id;
     }
 
-	public ArrayList<CustomerType> getTypes() {
+	public ArrayList<String> getTypes() {
 		return customerTypes;
 	}
 
-	public void setTypes(ArrayList<CustomerType> types) {
+	public void setTypes(ArrayList<String> types) {
 		this.customerTypes = types;
 	}
 
@@ -80,10 +80,10 @@ public class ServiceStation {
     	while(queueIter.hasNext()) //Iterate through queues
     	{
     		Queue tempQueue = queueIter.next();
-    		Iterator<CustomerType> typeIter = customerTypes.iterator();
+    		Iterator<String> typeIter = customerTypes.iterator();
     		while(typeIter.hasNext()) //Iterate through Service Station types
     		{
-    			CustomerType tempType = typeIter.next();
+    			String tempType = typeIter.next();
     			Customer c = tempQueue.dequeue(tempType); //get the next available customer in the queue
     			if(c != null)
     			{

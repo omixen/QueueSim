@@ -13,7 +13,7 @@ public abstract class Dispatcher implements Runnable {
     private float arrivalRate;
     private long sleepTime;
     private ArrayList<Queue> queues;
-    private Hashtable<CustomerType, Integer> customers;
+    private Hashtable<String, CustomerType> customerTypes;
     private boolean running = true;
 
     public float getArrivalRate() {
@@ -46,8 +46,8 @@ public abstract class Dispatcher implements Runnable {
         }
     }
 
-    public ArrayList<CustomerType> getCustomerTypes() {
-        return Collections.list(this.customers.keys());
+    public Hashtable<String, CustomerType> getCustomerTypes() {
+        return this.customerTypes;
     }
 
     public void run() {
@@ -73,7 +73,7 @@ public abstract class Dispatcher implements Runnable {
         }
     }
 
-    public Queue getQueue(CustomerType type) {
+    public Queue getQueue(String type) {
         /*
          * The logic here
          * get queue with the least amount of customers of type

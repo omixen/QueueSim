@@ -1,6 +1,5 @@
 package application;
 
-import
 import domain.*;
 
 import java.util.ArrayList;
@@ -28,13 +27,17 @@ public class Application {
         */
 
         //create customer types and groups
-        CustomerType expressType = new CustomerType("Express", "Express Customers", 10);
-        CustomerType regularType = new CustomerType("Regular", "Regular Customers", 50);
-        ArrayList<CustomerType> expressOnly = new ArrayList<CustomerType>();
-        expressOnly.add(expressType);
-        ArrayList<CustomerType> allCustomers = new ArrayList<CustomerType>();
-        allCustomers.add(expressType);
-        allCustomers.add(regularType);
+        CustomerType expressType = new CustomerType("Express", "Express Customers", 10, 100);
+        CustomerType regularType = new CustomerType("Regular", "Regular Customers", 50, 300);
+        ArrayList<CustomerType> allTypes = new ArrayList<CustomerType>();
+        allTypes.add(expressType);
+        allTypes.add(regularType);
+        //string version
+        ArrayList<String> expressOnly = new ArrayList<String>();
+        expressOnly.add(expressType.getName());
+        ArrayList<String> allCustomers = new ArrayList<String>();
+        allCustomers.add(expressType.getName());
+        allCustomers.add(regularType.getName());
 
         //create queues
         ArrayList<Queue> allQueues = new ArrayList<Queue>();
@@ -48,7 +51,8 @@ public class Application {
         ServiceStation ss3 = new ServiceStation("SS3", allCustomers, allQueues);
 
 		//init with 50 express customers and 50 regular customers
-
+        SimpleDispatcher dispatcher = new SimpleDispatcher(1, 10);
+        dispatcher.run();
 	}
 	
 	

@@ -10,13 +10,13 @@ import java.util.UUID;
 public class Queue {
     private String id;
     private ArrayList<Customer> customers;
-    private ArrayList<CustomerType> customerTypes;
+    private ArrayList<String> customerTypes;
 
     public Queue() {
-        this(UUID.randomUUID().toString(), new ArrayList<CustomerType>());
+        this(UUID.randomUUID().toString(), new ArrayList<String>());
     }
 
-    public Queue(String id, ArrayList<CustomerType> types) {
+    public Queue(String id, ArrayList<String> types) {
         this.setId(id);
         this.setTypes(types);
         this.setCustomers(new ArrayList<Customer>());
@@ -30,21 +30,21 @@ public class Queue {
         this.id = id;
     }
 
-    public ArrayList<CustomerType> getType() {
+    public ArrayList<String> getType() {
         return customerTypes;
     }
 
-    public void setTypes(ArrayList<CustomerType> types) {
+    public void setTypes(ArrayList<String> types) {
         this.customerTypes = types;
     }
 
-    public void addType(CustomerType t) {
+    public void addType(String t) {
         if (t != null) {
             customerTypes.add(t);
         }
     }
 
-    public boolean hasType(CustomerType t) {
+    public boolean hasType(String t) {
         if(customerTypes.contains(t)) {
             return true;
         }
@@ -69,13 +69,13 @@ public class Queue {
         }
     }
 
-   public Customer dequeue(CustomerType type) {
+   public Customer dequeue(String type) {
         if (type != null) {
             Iterator<Customer> custIter = customers.iterator();
             while (custIter.hasNext()) {
                 Customer c = custIter.next();
-                String t = c.getType().getName();
-                if (type.getName().equals(t)) 
+                String t = c.getType();
+                if (type == t)
                 {
                     custIter.remove();
                     return c;   

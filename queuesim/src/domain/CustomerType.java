@@ -12,11 +12,14 @@ public class CustomerType {
     private String name;
     private String description;
     private int serviceTime;
+    private int totalCustomers;
+    private float dispatchingStake;
 
-    public CustomerType(String name, String description, int serviceTime) {
+    public CustomerType(String name, String description, int serviceTime, int totalCustomers) {
         this.setName(name);
         this.setDescription(description);
         this.setServiceTime(serviceTime);
+        this.setTotalCustomers(totalCustomers);
     }
 
     public String getName() {
@@ -41,5 +44,41 @@ public class CustomerType {
 
     public void setServiceTime(int serviceTime) {
         this.serviceTime = serviceTime;
+    }
+
+    public int getTotalCustomers() {
+        return totalCustomers;
+    }
+
+    public void setTotalCustomers(int totalCustomers) {
+        this.totalCustomers = totalCustomers;
+    }
+
+    public float getDispatchingStake() {
+        return dispatchingStake;
+    }
+
+    public void setDispatchingStake(float dispatchingStake) {
+        this.dispatchingStake = dispatchingStake;
+    }
+
+    public Customer[] spawn(int number, long arrivalTime) {
+        //if there is less customers left
+        if(this.getTotalCustomers() < number) {
+            number = this.getTotalCustomers();
+        }
+        Customer[] customers = new Customer[number];
+        for(int i=0;i<number;i++) {
+            customers[i] = new Customer(this.getName(), arrivalTime);
+        }
+        this.setTotalCustomers(this.getTotalCustomers()-number);
+        return customers;
+    }
+
+    public boolean equals(Object o) {
+        if(o instanceof CustomerType) {
+            return (this.getName() == ((CustomerType)o).getName());
+        }
+        return false;
     }
 }
