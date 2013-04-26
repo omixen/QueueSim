@@ -23,8 +23,8 @@ public class Simulation {
         try {
             
             this.configpath = config;
-            this.dispatcher = new Dispatcher();
-            this.config = new Config(this.configpath); 
+            this.dispatcher = new SimpleDispatcher(1, 10);
+            this.config = new Config(this.configpath);
             this.stations = new ArrayList<ServiceStation>();
             
         } catch (Exception e){
