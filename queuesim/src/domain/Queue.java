@@ -73,14 +73,14 @@ public class Queue {
      * Returns the first customer in the queue with a certain CustomerType
      * but does not remove them from the queue
      */
-   public Customer topCustomer(CustomerType type)
+   public Customer topCustomer(String type)
    {
        if (type != null) {
            Iterator<Customer> custIter = customers.iterator();
            while (custIter.hasNext()) {
                Customer c = custIter.next();
-               String t = c.getType().getName();
-               if (type.getName().equals(t)) 
+               String t = c.getType();
+               if (type.equals(t))
                {
                    return c;   
                }
@@ -102,7 +102,7 @@ public class Queue {
 	   return c;
    }
    
-   public Customer dequeue(CustomerType type) {
+   public Customer dequeue(String type) {
 	   Customer c = this.topCustomer(type);
 	   return this.dequeue(c);
     }

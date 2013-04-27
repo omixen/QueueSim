@@ -92,10 +92,10 @@ public class ServiceStation {
     	while(queueIter.hasNext()) //Iterate through queues
     	{
     		Queue tempQueue = queueIter.next();
-    		Iterator<CustomerType> typeIter = customerTypes.iterator();
+    		Iterator<String> typeIter = customerTypes.iterator();
     		while(typeIter.hasNext()) //Iterate through Service Station types
     		{
-    			CustomerType tempType = typeIter.next();
+    			String tempType = typeIter.next();
     			Customer c = tempQueue.topCustomer(tempType); //get the next available customer in the queue
     			if(c != null)
     			{

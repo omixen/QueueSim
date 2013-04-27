@@ -25,6 +25,7 @@ service_station types queues : assigning queues and types to service station
             <property id="timeout">3600</property>
             <property id="arrival_rate">0.3</property>
             <property id="dispatching_policy">default</property>
+            <property id="dispatching_policy">default</property>
     </settings>
     
     <types>
