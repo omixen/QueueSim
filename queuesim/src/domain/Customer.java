@@ -47,4 +47,21 @@ public class Customer {
     public void setArrivalTime(long arrivalTime) {
         this.arrivalTime = arrivalTime;
     }
+    
+    public boolean equals(Customer other)
+    {
+        if(this == other)
+    		return true;
+    	else
+    	{
+    		if(this.getId() == other.getId())
+    		{
+    			return true;
+    		}
+    		else
+    		{
+    			return false;
+    		}
+    	}
+    }
 }
