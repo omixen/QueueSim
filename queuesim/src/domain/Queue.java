@@ -93,12 +93,17 @@ public class Queue {
     * Returns the first customer in the queue with a certain CustomerType
     * and will remove them from the queue
     */
-   public Customer dequeue(CustomerType type) {
-	   Customer c = this.topCustomer(type);
+   public Customer dequeue(Customer c)
+   {
 	   if(c != null)
 	   {
 		   customers.remove(c);
 	   }
 	   return c;
+   }
+   
+   public Customer dequeue(CustomerType type) {
+	   Customer c = this.topCustomer(type);
+	   return this.dequeue(c);
     }
 }
