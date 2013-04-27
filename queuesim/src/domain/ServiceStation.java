@@ -42,6 +42,14 @@ public class ServiceStation {
         this.id = id;
     }
 
+	public boolean getOpen(){
+		return open;
+	}
+	
+	public void setOpen(boolean open){
+		this.open = open;
+	}
+
 	public ArrayList<String> getTypes() {
 		return customerTypes;
 	}
@@ -74,33 +82,37 @@ public class ServiceStation {
         this.sleepTime = sleepTime;
     }
     
-    public void getNextCustomer()
+    public synchronized void getNextCustomer()
     {
     	long earliestArrival = -1;
+    	Queue chosenQueue = null;
+    	Customer tempCustomer = null;
+    	
     	Iterator<Queue> queueIter = queues.iterator();
     	while(queueIter.hasNext()) //Iterate through queues
     	{
     		Queue tempQueue = queueIter.next();
-    		Iterator<String> typeIter = customerTypes.iterator();
+    		Iterator<CustomerType> typeIter = customerTypes.iterator();
     		while(typeIter.hasNext()) //Iterate through Service Station types
     		{
-    			String tempType = typeIter.next();
-    			Customer c = tempQueue.dequeue(tempType); //get the next available customer in the queue
+    			CustomerType tempType = typeIter.next();
+    			Customer c = tempQueue.topCustomer(tempType); //get the next available customer in the queue
     			if(c != null)
     			{
     				if(earliestArrival == -1 || c.getArrivalTime() < earliestArrival)//Check if c arrived earlier
     				{
-    					customer = c;
+    					tempCustomer = c;
+    					chosenQueue = tempQueue;
     				}
     			}
     		}
     	}
-    }
-	
-    public void service()
-    {
-    	//service the customer
-    	customer = null; //Service station is finished with the customer
+    	
+    	if(tempCustomer != null) //remove the customer with correct type and earliest arrive
+    	{
+    		customer = tempCustomer;
+    		chosenQueue.dequeue(customer);
+    	}
     }
     
     public void run() {
