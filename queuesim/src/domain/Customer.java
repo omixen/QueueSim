@@ -48,13 +48,13 @@ public class Customer {
         this.arrivalTime = arrivalTime;
     }
     
-    public boolean equals(Customer other)
+    public boolean equals(Object other)
     {
         if(this == other)
     		return true;
-    	else
+    	if(other instanceof Customer)
     	{
-    		if(this.getId() == other.getId())
+    		if(this.getId() == ((Customer)other).getId())
     		{
     			return true;
     		}
@@ -62,6 +62,10 @@ public class Customer {
     		{
     			return false;
     		}
+    	}
+    	else
+    	{
+    		return false;
     	}
     }
 }
