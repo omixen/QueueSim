@@ -61,8 +61,11 @@ public abstract class Dispatcher implements Runnable {
      * Thread start and run
      */
 
-    public void start() {
-        (new Thread(this)).start();
+    public Thread start() {
+        //create, start and return thread
+        Thread thread = (new Thread(this));
+        thread.start();
+        return thread;
     }
 
     public void run() {
@@ -81,7 +84,7 @@ public abstract class Dispatcher implements Runnable {
                 //if no more customers or out of time limit, exit thread
                 if(!this.hasCustomers() || this.tick >= this.getMaxTicks())
                 {
-                    this.signalExit();
+                    this.exit();
                 }
                 //sleep for next tick
                 Thread.sleep(this.sleepTime);
@@ -92,7 +95,7 @@ public abstract class Dispatcher implements Runnable {
         }
     }
 
-    public void signalExit() {
+    public void exit() {
         this.running = false;
     }
     /*

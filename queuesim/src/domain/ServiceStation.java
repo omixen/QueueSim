@@ -14,13 +14,13 @@ import java.util.UUID;
  *
  *
  */
-public class ServiceStation {
+public class ServiceStation implements Runnable {
     private String id;
 	private ArrayList<String> customerTypes;
 	private Customer customer;
 	private ArrayList<Queue> queues;
 	private long sleepTime = 1000;
-    private boolean open = true;
+    private boolean running = true;
 	
 	public ServiceStation()
 	{
@@ -41,14 +41,6 @@ public class ServiceStation {
     public void setId(String id) {
         this.id = id;
     }
-
-	public boolean getOpen(){
-		return open;
-	}
-	
-	public void setOpen(boolean open){
-		this.open = open;
-	}
 
 	public ArrayList<String> getTypes() {
 		return customerTypes;
@@ -117,7 +109,7 @@ public class ServiceStation {
     
     public void run() {
         try {
-            while(open) {
+            while(running) {
                 //Long time = System.currentTimeMillis();
                 getNextCustomer();
                 Thread.sleep(this.sleepTime);
@@ -125,5 +117,16 @@ public class ServiceStation {
         } catch(InterruptedException ie) {
             ie.printStackTrace();
         }
+    }
+
+    public Thread start() {
+        //create, start and return thread
+        Thread thread = (new Thread(this));
+        thread.start();
+        return thread;
+    }
+
+    public void exit(){
+        this.running = false;
     }
 }

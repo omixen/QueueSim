@@ -10,112 +10,85 @@ import java.util.Hashtable;
  *
  * @author Cody
  */
-public class Simulation {
-    
-    
+public class Simulation implements Runnable {
+
     private String configpath;
-    private Dispatcher dispatcher;
-    private ArrayList<ServiceStation> stations;
     private Config config;
-    
+
+    public ArrayList<CustomerType> allTypes;
+    public ArrayList<Queue> allQueues;
+    public ArrayList<ServiceStation> allStations;
+    public ArrayList<Thread> allThreads;
+    public Thread mainThread;
+    public Dispatcher dispatcher;
+
     public Simulation(String config) {
-        
+
+        /*SHOPPING CHECKOUT SCENARIO
+         * Customer Types:
+         *   Express customers (X items or less)
+         *   Regular customers (> X items)
+         * Number of queues = Number of service stations
+         * Regular customers can only be assigned to non-express queues
+         * Express customers can be assigned to either express or non-express queues
+         * (This may be modified with smarter logic in the dispatcher calculating using the type serviceTime)
+        */
+
+        //create customer types and groups
+        CustomerType expressType = new CustomerType("Express", "Express Customers", 10, 100);
+        CustomerType regularType = new CustomerType("Regular", "Regular Customers", 50, 300);
+        allTypes = new ArrayList<CustomerType>();
+        allTypes.add(expressType);
+        allTypes.add(regularType);
+
+        //string version
+        ArrayList<String> expressOnly = new ArrayList<String>();
+        expressOnly.add(expressType.getName());
+        ArrayList<String> allCustomers = new ArrayList<String>();
+        allCustomers.add(expressType.getName());
+        allCustomers.add(regularType.getName());
+
+        //create queues
+        allQueues = new ArrayList<Queue>();
+        allQueues.add(new Queue("Q1", expressOnly));
+        allQueues.add(new Queue("Q2", allCustomers));
+        allQueues.add(new Queue("Q3", allCustomers));
+
+        //create service stations
+        ServiceStation ss1 = new ServiceStation("SS1", expressOnly, allQueues);
+        ServiceStation ss2 = new ServiceStation("SS2", allCustomers, allQueues);
+        ServiceStation ss3 = new ServiceStation("SS3", allCustomers, allQueues);
+        allStations.add(ss1);
+        allStations.add(ss2);
+        allStations.add(ss3);
+
+        //init with 50 express customers and 50 regular customers
+        dispatcher = new SimpleDispatcher(1, 10);
+
         try {
-            
-            this.configpath = config;
-            this.dispatcher = new SimpleDispatcher(1, 10);
-            this.config = new Config(this.configpath);
-            this.stations = new ArrayList<ServiceStation>();
-            
+            //start dispatcher thread
+            allThreads.add(dispatcher.start());
+            //start service station threads
+            for(ServiceStation ss : allStations) {
+                allThreads.add(ss.start());
+            }
+            //start main thread
+            mainThread = this.start();
+
         } catch (Exception e){
             
              System.out.println(e.getMessage());
         }
-            
-        
     }
-    
-    
 
-    public void build() {
-//              Hashtable station_types = this.config.stationTypes();
-////              
-//
-//                Set<String> keys = station_types.keySet();
-//                for(String key: keys){
-//                    System.out.println("KEY: "+key+" Value:"+station_types.get(key));
-//                    if ( key.matches(".*/.id.*") == true){
-//                        
-//                        
-//                    }
-//                }
-        
-        
-                Hashtable stations = this.config.stations();
-                Set<String> keys3 = stations.keySet();
-                for(String key: keys3){
-                    //System.out.println("KEY: "+key+" Value:"+stations.get(key));
-                    
-                    if ( key.matches(".*.id.*") == true){
-                        
-                        ServiceStation s = new ServiceStation();
-                        this.stations.add(s);
-                    }  
-                }
-        
-             
-               System.out.println(this.stations);
-//                
-//                Hashtable queues = this.config.queues();
-////              
-//
-//                Set<String> keys2 = queues.keySet();
-//                for(String key: keys2){
-//                    System.out.println("KEY: "+key+" Value:"+queues.get(key));
-//                }
-//        
-// 
-//                
-//                Hashtable settings = this.config.settings();
-////              
-//
-//                Set<String> keys4 = settings.keySet();
-//                for(String key: keys4){
-//                    System.out.println("KEY: "+key+" Value:"+settings.get(key));
-//                }
-//                
-                
-        
-//        Integer stationCount = 5;
-//        Integer queueCount = 5;
-        
-        // custtypes
-        // queuetypes
-        // 
-        
-        
-        // create queues
-        
-
-
-       // Create the queues
-//       for(Integer i = 0; i < queueCount; i++){
-//           
-//          Queue q = new Queue();
-//          
-//          this.dispatcher.addQueue(q);
-//  
-//       }
-        
-    }
-    
-    // Maybe this could be runnable but i'm not familiar with it
-    public void start(){
-        
-//        this.dispatcher.run();
-//        
+    public Thread start(){
+        //create, start and return thread
+        Thread thread = (new Thread(this));
+        thread.start();
+        return thread;
     } 
-    
-    
-    
+
+    public void run() {
+
+    }
 }
