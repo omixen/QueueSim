@@ -90,20 +90,41 @@ public class Simulation implements Runnable {
         return thread;
     }
 
-    public void stop(){
+    public void exit(){
         this.running = false;
     }
 
     public void run() {
         try {
+            boolean done = true;
             while(this.running) {
-                //check if user exited the app/stopped simulation
                 //check if dispatcher is done dispatching
-                //check if all customers have been serviced
+                //and if all customers have been serviced
+                if(this.hasCustomersInService()) {
+                    this.exit();
+                }
                 Thread.sleep(this.sleepTime);
             }
+            //make sure we exit all other threads
+            //when this one is closed
+
+
         } catch(InterruptedException ie) {
             ie.printStackTrace();
         }
+    }
+
+    public boolean hasCustomersInService() {
+        for(Queue q : this.allQueues) {
+            if(q.getLength()>0) {
+                return false;
+            }
+        }
+        for(ServiceStation ss : this.allStations) {
+            if(ss.getCustomer() != null) {
+                return false;
+            }
+        }
+        return true;
     }
 }
