@@ -21,6 +21,8 @@ public class Simulation implements Runnable {
     public ArrayList<Thread> allThreads;
     public Thread mainThread;
     public Dispatcher dispatcher;
+    private Boolean running = true;
+    private int sleepTime = 1000;
 
     public Simulation(String config) {
 
@@ -86,9 +88,22 @@ public class Simulation implements Runnable {
         Thread thread = (new Thread(this));
         thread.start();
         return thread;
-    } 
+    }
+
+    public void stop(){
+        this.running = false;
+    }
 
     public void run() {
-
+        try {
+            while(this.running) {
+                //check if user exited the app/stopped simulation
+                //check if dispatcher is done dispatching
+                //check if all customers have been serviced
+                Thread.sleep(this.sleepTime);
+            }
+        } catch(InterruptedException ie) {
+            ie.printStackTrace();
+        }
     }
 }
