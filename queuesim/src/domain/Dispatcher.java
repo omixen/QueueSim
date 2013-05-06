@@ -6,14 +6,10 @@ import java.util.*;
  *  Abstract Class Dispatcher
  *  Base class for all dispatchers
  */
-public abstract class Dispatcher implements Runnable {
+public abstract class Dispatcher {
     private float arrivalRate;
     private ArrayList<Queue> queues;
     private Hashtable<String, CustomerType> customerTypes;
-    private long sleepTime = 1000;
-    private boolean running = true;
-    private long tick = 0;
-    private long maxTicks = 3600;
 
     public float getArrivalRate() {
         return arrivalRate;
@@ -21,14 +17,6 @@ public abstract class Dispatcher implements Runnable {
 
     public void setArrivalRate(float arrivalRate) {
         this.arrivalRate = arrivalRate;
-    }
-
-    public float getSleepTime() {
-        return sleepTime;
-    }
-
-    public void setSleepTime(long sleepTime) {
-        this.sleepTime = sleepTime;
     }
 
     public ArrayList<Queue> getQueues() {
@@ -49,62 +37,18 @@ public abstract class Dispatcher implements Runnable {
         return this.customerTypes;
     }
 
-    public long getMaxTicks() {
-        return maxTicks;
-    }
-
-    public void setMaxTicks(long maxTicks) {
-        this.maxTicks = maxTicks;
-    }
-
-    /*
-     * Thread start and run
-     */
-
-    public Thread start() {
-        //create, start and return thread
-        Thread thread = (new Thread(this));
-        thread.start();
-        return thread;
-    }
-
-    public void run() {
-        try {
-            while(running) {
-                //increase counter
-                this.tick++;
-
-                //create customers based on the time
-                Customer[] customers = this.dispatch(this.tick);
-                //assign customers to queues
-                if (customers != null && customers.length > 0) {
-                    assignCustomers(customers);
-                }
-
-                //if no more customers or out of time limit, exit thread
-                if(!this.hasCustomers() || this.tick >= this.getMaxTicks())
-                {
-                    this.exit();
-                }
-                //sleep for next tick
-                Thread.sleep(this.sleepTime);
-            }
-
-        } catch(InterruptedException ie) {
-            ie.printStackTrace();
-        }
-    }
-
-    public void exit() {
-        this.running = false;
-    }
     /*
      *  Helper functions
      */
 
-    public void assignCustomers(Customer[] customers) {
-        for(int i=0;i<customers.length;i++) {
-            getQueue(customers[i].getType()).enqueue(customers[i]);
+    public void dispatchCustomers(long tick) {
+        //create customers based on the time
+        Customer[] customers = this.dispatch(tick);
+        //assign customers to queues
+        if (customers != null && customers.length > 0) {
+            for(int i=0;i<customers.length;i++) {
+                getQueue(customers[i].getType()).enqueue(customers[i]);
+            }
         }
     }
 
@@ -130,7 +74,7 @@ public abstract class Dispatcher implements Runnable {
          * dispatcher should send end signal
          * when there is no more customers to spawn
          */
-        String type = null;
+        String type;
         CustomerType customerType;
         Enumeration keys = this.getCustomerTypes().keys();
         while(keys.hasMoreElements()) {
@@ -142,6 +86,10 @@ public abstract class Dispatcher implements Runnable {
         }
         return false;
     }
+
+    /*
+     * Custom dispatcher should inherit this class and implement the dispatch method
+     */
 
     abstract public Customer[] dispatch(Long time);
 }

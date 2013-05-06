@@ -18,11 +18,12 @@ public class Simulation implements Runnable {
     public ArrayList<CustomerType> allTypes;
     public ArrayList<Queue> allQueues;
     public ArrayList<ServiceStation> allStations;
-    public ArrayList<Thread> allThreads;
     public Thread mainThread;
     public Dispatcher dispatcher;
     private Boolean running = true;
     private int sleepTime = 1000;
+    private long tick = 0;
+    private long maxTicks = 60;
 
     public Simulation(String config) {
 
@@ -67,27 +68,19 @@ public class Simulation implements Runnable {
         //init with 50 express customers and 50 regular customers
         dispatcher = new SimpleDispatcher(1, 10);
 
-        try {
-            //start dispatcher thread
-            allThreads.add(dispatcher.start());
-            //start service station threads
-            for(ServiceStation ss : allStations) {
-                allThreads.add(ss.start());
-            }
-            //start main thread
-            mainThread = this.start();
-
-        } catch (Exception e){
-            
-             System.out.println(e.getMessage());
-        }
+        //start main thread
+        this.start();
     }
 
-    public Thread start(){
-        //create, start and return thread
-        Thread thread = (new Thread(this));
-        thread.start();
-        return thread;
+    public void start(){
+        try {
+            //create, start and return thread
+            mainThread = (new Thread(this));
+            mainThread.start();
+        } catch (Exception e){
+
+            System.out.println(e.getMessage());
+        }
     }
 
     public void exit(){
@@ -96,19 +89,19 @@ public class Simulation implements Runnable {
 
     public void run() {
         try {
-            boolean done = true;
             while(this.running) {
-                //check if dispatcher is done dispatching
-                //and if all customers have been serviced
-                if(this.hasCustomersInService()) {
-                    this.exit();
+                this.tick++;
+                //dispatch customers  for this tick
+                dispatcher.dispatchCustomers(this.tick);
+
+
+                //if no more customer in queue and service station
+                //or we go over the maxTicks (timeout), exit
+                if(!this.hasCustomersInService() || this.tick > this.maxTicks) {
+                    exit();
                 }
                 Thread.sleep(this.sleepTime);
             }
-            //make sure we exit all other threads
-            //when this one is closed
-
-
         } catch(InterruptedException ie) {
             ie.printStackTrace();
         }

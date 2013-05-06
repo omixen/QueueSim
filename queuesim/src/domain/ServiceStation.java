@@ -12,16 +12,14 @@ import java.util.UUID;
  * - Customer getCustomer() : picks up next Customer with the correct customerTypes from queues, earlier arrivalTime first if multiple available from multiple queues.
  * - void removeCustomer()
  *
- *
  */
-public class ServiceStation implements Runnable {
+
+public class ServiceStation {
     private String id;
 	private ArrayList<String> customerTypes;
 	private Customer customer;
 	private ArrayList<Queue> queues;
-	private long sleepTime = 1000;
-    private boolean running = true;
-	
+
 	public ServiceStation()
 	{
 		this(UUID.randomUUID().toString(), new ArrayList<String>(), new ArrayList<Queue>());
@@ -31,7 +29,6 @@ public class ServiceStation implements Runnable {
         this.setId(id);
         this.setTypes(customerTypes);
         this.setQueues(queues);
-        this.setSleepTime(0);
     }
 
     public String getId() {
@@ -65,14 +62,6 @@ public class ServiceStation implements Runnable {
 	public void setQueues(ArrayList<Queue> queues) {
 		this.queues = queues;
 	}
-
-	public float getSleepTime() {
-        return sleepTime;
-    }
-
-    public void setSleepTime(long sleepTime) {
-        this.sleepTime = sleepTime;
-    }
     
     public synchronized void getNextCustomer()
     {
@@ -105,28 +94,5 @@ public class ServiceStation implements Runnable {
     		customer = tempCustomer;
     		chosenQueue.dequeue(customer);
     	}
-    }
-    
-    public void run() {
-        try {
-            while(running) {
-                //Long time = System.currentTimeMillis();
-                getNextCustomer();
-                Thread.sleep(this.sleepTime);
-            }
-        } catch(InterruptedException ie) {
-            ie.printStackTrace();
-        }
-    }
-
-    public Thread start() {
-        //create, start and return thread
-        Thread thread = (new Thread(this));
-        thread.start();
-        return thread;
-    }
-
-    public void exit(){
-        this.running = false;
     }
 }

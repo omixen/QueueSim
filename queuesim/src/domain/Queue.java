@@ -63,7 +63,7 @@ public class Queue {
         return customers.size();
     }
 
-    public void enqueue(Customer customer) {
+    public synchronized void enqueue(Customer customer) {
         if (customer != null) {
             customers.add(customer);
         }
@@ -73,7 +73,7 @@ public class Queue {
      * Returns the first customer in the queue with a certain CustomerType
      * but does not remove them from the queue
      */
-   public Customer topCustomer(String type)
+   public synchronized Customer topCustomer(String type)
    {
        if (type != null) {
            Iterator<Customer> custIter = customers.iterator();
@@ -90,10 +90,9 @@ public class Queue {
    }
 
    /*
-    * Returns the first customer in the queue with a certain CustomerType
-    * and will remove them from the queue
+    * Remove customer from queue
     */
-   public Customer dequeue(Customer c)
+   public synchronized Customer dequeue(Customer c)
    {
 	   if(c != null)
 	   {
