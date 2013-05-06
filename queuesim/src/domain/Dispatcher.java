@@ -37,6 +37,10 @@ public abstract class Dispatcher {
         return this.customerTypes;
     }
 
+    public void setCustomerTypes(Hashtable<String, CustomerType> customerTypes) {
+        this.customerTypes = customerTypes;
+    }
+
     /*
      *  Helper functions
      */

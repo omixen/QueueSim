@@ -4,6 +4,12 @@
  */
 package domain;
 import java.util.ArrayList;
+import java.io.Writer;
+import java.io.BufferedWriter;
+import java.io.FileOutputStream;
+import java.io.OutputStreamWriter;
+import java.io.IOException;
+import java.io.FileNotFoundException;
 import java.util.Set;
 import java.util.Hashtable;
 /**
@@ -14,8 +20,9 @@ public class Simulation implements Runnable {
 
     private String configpath;
     private Config config;
+    private String outputFile = "output.txt";
 
-    public ArrayList<CustomerType> allTypes;
+    public Hashtable<String, CustomerType> allTypes;
     public ArrayList<Queue> allQueues;
     public ArrayList<ServiceStation> allStations;
     public Thread mainThread;
@@ -23,7 +30,7 @@ public class Simulation implements Runnable {
     private Boolean running = true;
     private int sleepTime = 1000;
     private long tick = 0;
-    private long maxTicks = 60;
+    private long maxTicks = 10;
 
     public Simulation(String config) {
 
@@ -40,9 +47,9 @@ public class Simulation implements Runnable {
         //create customer types and groups
         CustomerType expressType = new CustomerType("Express", "Express Customers", 10, 100);
         CustomerType regularType = new CustomerType("Regular", "Regular Customers", 50, 300);
-        allTypes = new ArrayList<CustomerType>();
-        allTypes.add(expressType);
-        allTypes.add(regularType);
+        allTypes = new Hashtable<String, CustomerType>();
+        allTypes.put("Express", expressType);
+        allTypes.put("Regular", regularType);
 
         //string version
         ArrayList<String> expressOnly = new ArrayList<String>();
@@ -58,6 +65,7 @@ public class Simulation implements Runnable {
         allQueues.add(new Queue("Q3", allCustomers));
 
         //create service stations
+        allStations = new ArrayList<ServiceStation>();
         ServiceStation ss1 = new ServiceStation("SS1", expressOnly, allQueues);
         ServiceStation ss2 = new ServiceStation("SS2", allCustomers, allQueues);
         ServiceStation ss3 = new ServiceStation("SS3", allCustomers, allQueues);
@@ -67,9 +75,8 @@ public class Simulation implements Runnable {
 
         //init with 50 express customers and 50 regular customers
         dispatcher = new SimpleDispatcher(1, 10);
-
-        //start main thread
-        this.start();
+        dispatcher.setCustomerTypes(allTypes);
+        dispatcher.setQueues(allQueues);
     }
 
     public void start(){
@@ -77,8 +84,8 @@ public class Simulation implements Runnable {
             //create, start and return thread
             mainThread = (new Thread(this));
             mainThread.start();
+            System.out.println("Simulation has been started successfully!");
         } catch (Exception e){
-
             System.out.println(e.getMessage());
         }
     }
@@ -94,7 +101,6 @@ public class Simulation implements Runnable {
                 //dispatch customers  for this tick
                 dispatcher.dispatchCustomers(this.tick);
 
-
                 //if no more customer in queue and service station
                 //or we go over the maxTicks (timeout), exit
                 if(!this.hasCustomersInService() || this.tick > this.maxTicks) {
@@ -102,6 +108,9 @@ public class Simulation implements Runnable {
                 }
                 Thread.sleep(this.sleepTime);
             }
+            //write report result
+            writeResult();
+
         } catch(InterruptedException ie) {
             ie.printStackTrace();
         }
@@ -119,5 +128,18 @@ public class Simulation implements Runnable {
             }
         }
         return true;
+    }
+
+    public void writeResult() {
+        Writer writer = null;
+        try {
+            writer = new BufferedWriter(new OutputStreamWriter(
+                    new FileOutputStream(this.outputFile), "utf-8"));
+            writer.write("Something is happening\n");
+        } catch (IOException ex){
+            ex.printStackTrace();
+        } finally {
+            try {writer.close();} catch (Exception ex) {}
+        }
     }
 }
