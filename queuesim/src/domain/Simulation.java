@@ -109,7 +109,7 @@ public class Simulation implements Runnable {
                 Thread.sleep(this.sleepTime);
             }
             //write report result
-            writeResult();
+            writeResult(this.tick);
 
         } catch(InterruptedException ie) {
             ie.printStackTrace();
@@ -119,23 +119,24 @@ public class Simulation implements Runnable {
     public boolean hasCustomersInService() {
         for(Queue q : this.allQueues) {
             if(q.getLength()>0) {
-                return false;
+                return true;
             }
         }
         for(ServiceStation ss : this.allStations) {
             if(ss.getCustomer() != null) {
-                return false;
+                return true;
             }
         }
-        return true;
+        return false;
     }
 
-    public void writeResult() {
+    public void writeResult(long tick) {
         Writer writer = null;
         try {
             writer = new BufferedWriter(new OutputStreamWriter(
                     new FileOutputStream(this.outputFile), "utf-8"));
             writer.write("Something is happening\n");
+            writer.write("tick is: "+tick);
         } catch (IOException ex){
             ex.printStackTrace();
         } finally {
