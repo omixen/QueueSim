@@ -11,7 +11,7 @@ package domain;
 public class CustomerType {
     private String name;
     private String description;
-    private int serviceTime;
+    private long serviceTime;
     private int totalCustomers;
     private float dispatchingStake;
 
@@ -38,7 +38,7 @@ public class CustomerType {
         this.description = description;
     }
 
-    public int getServiceTime() {
+    public long getServiceTime() {
         return serviceTime;
     }
 
@@ -69,7 +69,7 @@ public class CustomerType {
         }
         Customer[] customers = new Customer[number];
         for(int i=0;i<number;i++) {
-            customers[i] = new Customer(this.getName(), arrivalTime);
+            customers[i] = new Customer(this.getName(), arrivalTime, this.getServiceTime());
         }
         this.setTotalCustomers(this.getTotalCustomers()-number);
         return customers;
@@ -80,5 +80,9 @@ public class CustomerType {
             return (this.getName() == ((CustomerType)o).getName());
         }
         return false;
+    }
+
+    public boolean isEmpty() {
+        return !(this.getTotalCustomers()>0);
     }
 }

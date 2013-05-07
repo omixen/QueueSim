@@ -84,7 +84,7 @@ public abstract class Dispatcher {
         while(keys.hasMoreElements()) {
             type = keys.nextElement().toString();
             customerType = this.getCustomerTypes().get(type);
-            if(customerType.getTotalCustomers() > 0 ) {
+            if(!customerType.isEmpty()) {
                 return true;
             }
         }

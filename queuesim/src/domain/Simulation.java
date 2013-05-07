@@ -18,8 +18,8 @@ import java.util.Hashtable;
  */
 public class Simulation implements Runnable {
 
-    private String configpath;
     private Config config;
+    private String configFile = "config.txt";
     private String outputFile = "output.txt";
 
     public Hashtable<String, CustomerType> allTypes;
@@ -32,7 +32,10 @@ public class Simulation implements Runnable {
     private long tick = 0;
     private long maxTicks = 10;
 
-    public Simulation(String config) {
+    public Simulation(String config, String output) {
+
+        this.configFile = config;
+        this.outputFile = output;
 
         /*SHOPPING CHECKOUT SCENARIO
          * Customer Types:
@@ -63,10 +66,8 @@ public class Simulation implements Runnable {
         allStations = new ArrayList<ServiceStation>();
         ServiceStation ss1 = new ServiceStation("SS1", allCustomers, allQueues);
         ServiceStation ss2 = new ServiceStation("SS2", allCustomers, allQueues);
-        ServiceStation ss3 = new ServiceStation("SS3", allCustomers, allQueues);
         allStations.add(ss1);
         allStations.add(ss2);
-        allStations.add(ss3);
 
         //init with 50 express customers and 50 regular customers
         dispatcher = new SimpleDispatcher(1, 1);
@@ -76,7 +77,7 @@ public class Simulation implements Runnable {
 
     public void start(){
         try {
-            //create, start and return thread
+            //create and start thread on this class
             mainThread = (new Thread(this));
             mainThread.start();
             System.out.println("Simulation has been started successfully!");
@@ -98,14 +99,23 @@ public class Simulation implements Runnable {
 
                 //update customers in service stations
                 for(ServiceStation ss : this.allStations) {
+                    //is this service station servicing a customer
                     if(ss.getCustomer() != null) {
-
+                        //is it done
+                        if(this.tick > (ss.getStartTime()+ss.getCustomer().getServiceTime())) {
+                            ss.removeCustomer();
+                        }
+                    }
+                    //if empty by now, get next customer
+                    if(ss.getCustomer() == null) {
+                        ss.getNextCustomer(this.tick);
                     }
                 }
 
-                //if no more customer in queue and service station
+                //if no more customer to dispatch
+                // and no more customer in queue and service station
                 //or we go over the maxTicks (timeout), exit
-                if(!this.hasCustomersInService() || this.tick > this.maxTicks) {
+                if((!dispatcher.hasCustomers() && !this.hasCustomersInService()) || this.tick > this.maxTicks) {
                     exit();
                 }
                 Thread.sleep(this.sleepTime);
