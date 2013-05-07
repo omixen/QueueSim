@@ -45,28 +45,23 @@ public class Simulation implements Runnable {
         */
 
         //create customer types and groups
-        CustomerType expressType = new CustomerType("Express", "Express Customers", 10, 100);
-        CustomerType regularType = new CustomerType("Regular", "Regular Customers", 50, 300);
         allTypes = new Hashtable<String, CustomerType>();
-        allTypes.put("Express", expressType);
+        CustomerType regularType = new CustomerType("Regular", "Regular Customers", 50, 300);
         allTypes.put("Regular", regularType);
 
         //string version
-        ArrayList<String> expressOnly = new ArrayList<String>();
-        expressOnly.add(expressType.getName());
         ArrayList<String> allCustomers = new ArrayList<String>();
-        allCustomers.add(expressType.getName());
         allCustomers.add(regularType.getName());
 
         //create queues
         allQueues = new ArrayList<Queue>();
-        allQueues.add(new Queue("Q1", expressOnly));
+        allQueues.add(new Queue("Q1", allCustomers));
         allQueues.add(new Queue("Q2", allCustomers));
         allQueues.add(new Queue("Q3", allCustomers));
 
         //create service stations
         allStations = new ArrayList<ServiceStation>();
-        ServiceStation ss1 = new ServiceStation("SS1", expressOnly, allQueues);
+        ServiceStation ss1 = new ServiceStation("SS1", allCustomers, allQueues);
         ServiceStation ss2 = new ServiceStation("SS2", allCustomers, allQueues);
         ServiceStation ss3 = new ServiceStation("SS3", allCustomers, allQueues);
         allStations.add(ss1);
@@ -74,7 +69,7 @@ public class Simulation implements Runnable {
         allStations.add(ss3);
 
         //init with 50 express customers and 50 regular customers
-        dispatcher = new SimpleDispatcher(1, 10);
+        dispatcher = new SimpleDispatcher(1, 1);
         dispatcher.setCustomerTypes(allTypes);
         dispatcher.setQueues(allQueues);
     }
@@ -100,6 +95,13 @@ public class Simulation implements Runnable {
                 this.tick++;
                 //dispatch customers  for this tick
                 dispatcher.dispatchCustomers(this.tick);
+
+                //update customers in service stations
+                for(ServiceStation ss : this.allStations) {
+                    if(ss.getCustomer() != null) {
+
+                    }
+                }
 
                 //if no more customer in queue and service station
                 //or we go over the maxTicks (timeout), exit

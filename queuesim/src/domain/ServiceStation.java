@@ -19,6 +19,7 @@ public class ServiceStation {
 	private ArrayList<String> customerTypes;
 	private Customer customer;
 	private ArrayList<Queue> queues;
+    private int startServiceTime = 0;
 
 	public ServiceStation()
 	{
