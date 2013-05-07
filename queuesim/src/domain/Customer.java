@@ -13,6 +13,7 @@ public class Customer {
     private String id;
     private String type;
     private long arrivalTime;
+    private long startServiceTime;
     private long serviceTime;
 
     public Customer(String type, long arrivalTime, long serviceTime) {
@@ -48,6 +49,14 @@ public class Customer {
 
     public void setArrivalTime(long arrivalTime) {
         this.arrivalTime = arrivalTime;
+    }
+
+    public long getStartServiceTime() {
+        return startServiceTime;
+    }
+
+    public void setStartServiceTime(long startServiceTime) {
+        this.startServiceTime = startServiceTime;
     }
 
     public long getServiceTime() {

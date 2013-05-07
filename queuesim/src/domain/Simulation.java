@@ -102,7 +102,8 @@ public class Simulation implements Runnable {
                     //is this service station servicing a customer
                     if(ss.getCustomer() != null) {
                         //is it done
-                        if(this.tick > (ss.getStartTime()+ss.getCustomer().getServiceTime())) {
+                        Customer customer = ss.getCustomer();
+                        if(this.tick > (customer.getStartServiceTime()+customer.getServiceTime())) {
                             ss.removeCustomer();
                         }
                     }

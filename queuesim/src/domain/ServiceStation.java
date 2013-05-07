@@ -20,6 +20,7 @@ public class ServiceStation {
 	private Customer customer;
 	private ArrayList<Queue> queues;
     private long startTime = 0;
+    private int totalServiced = 0;
 
 	public ServiceStation()
 	{
@@ -64,12 +65,8 @@ public class ServiceStation {
 		this.queues = queues;
 	}
 
-    public long getStartTime() {
-        return startTime;
-    }
-
-    public void setStartTime(int startTime) {
-        this.startTime = startTime;
+    public int getTotalServiced() {
+        return this.totalServiced;
     }
     
     public synchronized void getNextCustomer(long tick)
@@ -101,12 +98,13 @@ public class ServiceStation {
     	if(tempCustomer != null) //remove the customer with correct type and earliest arrive
     	{
     		customer = tempCustomer;
-            startTime = tick;
+            customer.setStartServiceTime(tick);
     		chosenQueue.dequeue(customer);
     	}
     }
 
     public void removeCustomer() {
+        this.totalServiced++;
         this.setCustomer(null);
     }
 }
