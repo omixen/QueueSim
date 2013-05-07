@@ -7,17 +7,8 @@ import java.util.*;
  *  Base class for all dispatchers
  */
 public abstract class Dispatcher {
-    private float arrivalRate;
     private ArrayList<Queue> queues;
     private Hashtable<String, CustomerType> customerTypes;
-
-    public float getArrivalRate() {
-        return arrivalRate;
-    }
-
-    public void setArrivalRate(float arrivalRate) {
-        this.arrivalRate = arrivalRate;
-    }
 
     public ArrayList<Queue> getQueues() {
         return this.queues;

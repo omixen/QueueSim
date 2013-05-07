@@ -3,13 +3,8 @@
  * and open the template in the editor.
  */
 package domain;
+import java.io.*;
 import java.util.ArrayList;
-import java.io.Writer;
-import java.io.BufferedWriter;
-import java.io.FileOutputStream;
-import java.io.OutputStreamWriter;
-import java.io.IOException;
-import java.io.FileNotFoundException;
 import java.util.Set;
 import java.util.Hashtable;
 /**
@@ -21,39 +16,39 @@ public class Simulation implements Runnable {
     private Config config;
     private String configFile = "config.txt";
     private String outputFile = "output.txt";
+    private String outputLog = "output.log";
 
     public Hashtable<String, CustomerType> allTypes;
     public ArrayList<Queue> allQueues;
     public ArrayList<ServiceStation> allStations;
     public Thread mainThread;
     public Dispatcher dispatcher;
+    public Report report;
     private Boolean running = true;
-    private int sleepTime = 1000;
+    private int sleepTime = 200;
     private long tick = 0;
-    private long maxTicks = 10;
+    private long maxTicks = 1800;
 
     public Simulation(String config, String output) {
 
         this.configFile = config;
         this.outputFile = output;
 
-        /*SHOPPING CHECKOUT SCENARIO
-         * Customer Types:
-         *   Express customers (X items or less)
-         *   Regular customers (> X items)
-         * Number of queues = Number of service stations
-         * Regular customers can only be assigned to non-express queues
-         * Express customers can be assigned to either express or non-express queues
-         * (This may be modified with smarter logic in the dispatcher calculating using the type serviceTime)
-        */
+        /*
+         * Setiawan: single service station, multiple queues, customers dispatched to shortest queue, fifo queuing policy.
+         * since single customer type, auto fifo
+         */
 
         //create customer types and groups
         allTypes = new Hashtable<String, CustomerType>();
-        CustomerType regularType = new CustomerType("Regular", "Regular Customers", 50, 300);
+        CustomerType regularType = new CustomerType("Regular", "Regular Customers", 5, 100);
+        //CustomerType quickType = new CustomerType("Quick", "Quick Customers", 3, 50);
+        //allTypes.put("Quick", quickType);
         allTypes.put("Regular", regularType);
 
         //string version
         ArrayList<String> allCustomers = new ArrayList<String>();
+        //allCustomers.add(quickType.getName());
         allCustomers.add(regularType.getName());
 
         //create queues
@@ -65,14 +60,18 @@ public class Simulation implements Runnable {
         //create service stations
         allStations = new ArrayList<ServiceStation>();
         ServiceStation ss1 = new ServiceStation("SS1", allCustomers, allQueues);
-        ServiceStation ss2 = new ServiceStation("SS2", allCustomers, allQueues);
+        //ServiceStation ss2 = new ServiceStation("SS2", allCustomers, allQueues);
         allStations.add(ss1);
-        allStations.add(ss2);
+        //allStations.add(ss2);
 
         //init with 50 express customers and 50 regular customers
         dispatcher = new SimpleDispatcher(1, 1);
         dispatcher.setCustomerTypes(allTypes);
         dispatcher.setQueues(allQueues);
+
+        //init report
+        report = new Report();
+        report.numberOfServiceStations = allStations.size();
     }
 
     public void start(){
@@ -92,10 +91,21 @@ public class Simulation implements Runnable {
 
     public void run() {
         try {
+            //points system.out to a file
+            System.setOut(new PrintStream(new FileOutputStream(this.outputLog)));
+            report.simulationStartTime = System.currentTimeMillis();
+
+            //main thread body
             while(this.running) {
-                this.tick++;
                 //dispatch customers  for this tick
                 dispatcher.dispatchCustomers(this.tick);
+
+                //register longest queue, if we get pub sub it would be better here
+                for(Queue q : this.allQueues) {
+                    if(q.getLength()>report.longestQueue) {
+                        report.longestQueue = q.getLength();
+                    }
+                }
 
                 //update customers in service stations
                 for(ServiceStation ss : this.allStations) {
@@ -103,7 +113,9 @@ public class Simulation implements Runnable {
                     if(ss.getCustomer() != null) {
                         //is it done
                         Customer customer = ss.getCustomer();
-                        if(this.tick > (customer.getStartServiceTime()+customer.getServiceTime())) {
+                        if(this.tick >= (customer.getStartServiceTime()+customer.getServiceTime())) {
+                            //register customer time for the report
+                            report.addCustomerTime(this.tick-customer.getArrivalTime());
                             ss.removeCustomer();
                         }
                     }
@@ -118,13 +130,19 @@ public class Simulation implements Runnable {
                 //or we go over the maxTicks (timeout), exit
                 if((!dispatcher.hasCustomers() && !this.hasCustomersInService()) || this.tick > this.maxTicks) {
                     exit();
+                }else {
+                    this.tick++;
                 }
                 Thread.sleep(this.sleepTime);
             }
-            //write report result
-            writeResult(this.tick);
 
-        } catch(InterruptedException ie) {
+            report.totalTicks = this.tick;
+            report.simulationEndTime = System.currentTimeMillis();
+
+            //write report result
+            report.writeResult(this.outputFile);
+
+        } catch(FileNotFoundException|InterruptedException ie) {
             ie.printStackTrace();
         }
     }
@@ -141,19 +159,5 @@ public class Simulation implements Runnable {
             }
         }
         return false;
-    }
-
-    public void writeResult(long tick) {
-        Writer writer = null;
-        try {
-            writer = new BufferedWriter(new OutputStreamWriter(
-                    new FileOutputStream(this.outputFile), "utf-8"));
-            writer.write("Something is happening\n");
-            writer.write("tick is: "+tick);
-        } catch (IOException ex){
-            ex.printStackTrace();
-        } finally {
-            try {writer.close();} catch (Exception ex) {}
-        }
     }
 }

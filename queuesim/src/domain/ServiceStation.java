@@ -89,6 +89,7 @@ public class ServiceStation {
     				if(earliestArrival == -1 || c.getArrivalTime() < earliestArrival)//Check if c arrived earlier
     				{
     					tempCustomer = c;
+                        earliestArrival = c.getArrivalTime();
     					chosenQueue = tempQueue;
     				}
     			}
