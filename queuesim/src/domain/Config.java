@@ -32,230 +32,217 @@ public class Config {
     
     
     public Config(String url) throws Exception {
-       File fXmlFile = new File(url);
-  DocumentBuilderFactory dbFactory = DocumentBuilderFactory.newInstance();
-	DocumentBuilder dBuilder = dbFactory.newDocumentBuilder();
-	this.config = dBuilder.parse(fXmlFile);
+	    File fXmlFile = new File(url);
+	    DocumentBuilderFactory dbFactory = DocumentBuilderFactory.newInstance();
+		DocumentBuilder dBuilder = dbFactory.newDocumentBuilder();
+		this.config = dBuilder.parse(fXmlFile);
  
 	//optional, but recommended
 	//read this - http://stackoverflow.com/questions/13786607/normalization-in-dom-parsing-with-java-how-does-it-work
 	this.config.getDocumentElement().normalize();
         
     }
+    
+    public ArrayList<Hashtable<String, String>> customerTypes(){   
+            return this.getCustomerTypes("customer_type");
+    }
+    
+    public void stations(ArrayList<String> ssIDs, Hashtable<String, ArrayList<String>> ssQueues,
+    		Hashtable<String, ArrayList<String>> ssTypes){   
+    	NodeList nList = this.config.getElementsByTagName("service_station");
+    	
+    	for (int temp = 0; temp < nList.getLength(); temp++) {
+    		Node nNode = nList.item(temp);
+    		ArrayList<String> queues = new ArrayList<String>();
+    		ArrayList<String> types = new ArrayList<String>();
+    		if (nNode.getNodeType() == Node.ELEMENT_NODE) {
 
-    public Hashtable stationTypes(){   
-            return this.getElement("service_station_type");
-    }
-    
-    public Hashtable customerTypes(){   
-            return this.getElement("customer_types");
-    }
-    
-    public Hashtable queues(){   
-            return this.getElement("queue");
-    }
-    
-    public Hashtable stations(){   
-            return this.getStations();
+    			Element eElement = (Element) nNode;
+    			String name = eElement.getAttribute("id");
+    			ssIDs.add(name);
+    			
+    			NodeList aqList = (NodeList) eElement.getElementsByTagName("assigned_queue");
+    			for (int temp2 = 0; temp2 < aqList.getLength(); temp2++) {
+
+    				Node pNode = aqList.item(temp2);
+
+    				Element pElement = (Element) pNode;
+
+    				String value = pElement.getTextContent();    
+    				queues.add(value);
+    			}    
+    			
+    			NodeList acList = (NodeList) eElement.getElementsByTagName("allowed_customer_type");
+    			for (int temp2 = 0; temp2 < acList.getLength(); temp2++) {
+
+    				Node pNode = acList.item(temp2);
+
+    				Element pElement = (Element) pNode;
+
+    				String value = pElement.getTextContent();    
+    				types.add(value);
+    			}  
+    			ssQueues.put(name, queues);
+    			ssTypes.put(name, types);
+    		}
+    	}
+    	
     }
       
-    public Hashtable settings(){   
+    public Hashtable<String, String> settings(){   
             return this.getSettings("settings");
     }
-        
-    public Hashtable getElement(String type_name){
-        
-        NodeList nList = this.config.getElementsByTagName(type_name);
-            Hashtable<String, String> types = new Hashtable<String, String>();   
+      
+    public void queues(ArrayList<String> queueIDs, Hashtable<String, ArrayList<String>> queueTypes){  
+    	NodeList nList = this.config.getElementsByTagName("queue");  
+    	
+    	for (int temp = 0; temp < nList.getLength(); temp++) {
+    		Node nNode = nList.item(temp);
+    		ArrayList<String> custTypes = new ArrayList<String>();
+    		if (nNode.getNodeType() == Node.ELEMENT_NODE) {
 
-                       for (int temp = 0; temp < nList.getLength(); temp++) {
+    			Element eElement = (Element) nNode;
+    			String name = eElement.getAttribute("id");
+    			queueIDs.add(name);
+    			
+    			NodeList pList = (NodeList) eElement.getElementsByTagName("customer_types");
+    			for (int temp2 = 0; temp2 < pList.getLength(); temp2++) {
 
-                           Node nNode = nList.item(temp);
-                           
-                         
+    				Node pNode = pList.item(temp2);
 
-                           if (nNode.getNodeType() == Node.ELEMENT_NODE) {
+    				Element pElement = (Element) pNode;
 
-                                   Element eElement = (Element) nNode;
-                                   NodeList pList = (NodeList) eElement.getElementsByTagName("property");    
-                                   
-                                   if ( eElement.getAttribute("id").toString() != "") {
-                                        String label1 = eElement.getAttribute("id").toString() + "." + "id";
-                                        String value2 = eElement.getAttribute("id").toString();
-                                        types.put(label1, value2); 
-                                   }
-                                   
-                                    if ( eElement.getAttribute("type").toString() != "") {
-                                        String label1 = eElement.getAttribute("id").toString() + "." + "type";
-                                        String value2 = eElement.getAttribute("type").toString();
-                                        types.put(label1, value2); 
-                                   }
-                                      for (int temp2 = 0; temp2 < pList.getLength(); temp2++) {
+    				String value = pElement.getTextContent();    
+    				custTypes.add(value);
+    			}     
+    			queueTypes.put(name, custTypes);
+    		}
+    	}
 
-                                            Node pNode = pList.item(temp2);
-
-                                                Element pElement = (Element) pNode;
-
-
-                                                String label = pElement.getAttribute("id");
-                                                String value = pElement.getTextContent();
-
-                                                types.put(label, value);    
-
-                                      }                              
-                           }
-                   }
-
-           return types;
     }
     
-        public Hashtable getSettings(String type_name){
-        
-        NodeList nList = this.config.getElementsByTagName(type_name);
-            Hashtable<String, String> types = new Hashtable<String, String>();   
+    public ArrayList<Hashtable<String, String>> getCustomerTypes(String type_name){
 
-                       for (int temp = 0; temp < nList.getLength(); temp++) {
+    	NodeList nList = this.config.getElementsByTagName(type_name);  
+    	ArrayList<Hashtable<String, String>> custTypesList = new ArrayList<Hashtable<String, String>>();
+    	
+    	for (int temp = 0; temp < nList.getLength(); temp++) {
+    		Hashtable<String, String> types = new Hashtable<String, String>(); 
+    		Node nNode = nList.item(temp);
 
-                           Node nNode = nList.item(temp);
-                           
-                         
+    		if (nNode.getNodeType() == Node.ELEMENT_NODE) {
 
-                           if (nNode.getNodeType() == Node.ELEMENT_NODE) {
+    			Element eElement = (Element) nNode;
+    			String name = eElement.getAttribute("id");
+    			types.put("name", name);
+    			
+    			NodeList pList = (NodeList) eElement.getElementsByTagName("property");
+    			for (int temp2 = 0; temp2 < pList.getLength(); temp2++) {
 
-                                   Element eElement = (Element) nNode;
-                                   NodeList pList = (NodeList) eElement.getElementsByTagName("property");    
-                                   
-                                   if ( eElement.getAttribute("id").toString() != "") {
-                                        String label1 = eElement.getAttribute("id").toString() + "." + "id";
-                                        String value2 = eElement.getAttribute("id").toString();
-                                        types.put(label1, value2); 
-                                   }
-                                   
-                                    if ( eElement.getAttribute("type").toString() != "") {
-                                        String label1 = eElement.getAttribute("id").toString() + "." + "type";
-                                        String value2 = eElement.getAttribute("type").toString();
-                                        types.put(label1, value2); 
-                                   }
-                                      for (int temp2 = 0; temp2 < pList.getLength(); temp2++) {
+    				Node pNode = pList.item(temp2);
 
-                                            Node pNode = pList.item(temp2);
+    				Element pElement = (Element) pNode;
 
-                                                Element pElement = (Element) pNode;
+    				String label = pElement.getAttribute("id");
+    				String value = pElement.getTextContent();
 
+    				types.put(label, value);    
 
-                                                String label = "SETTINGS" + "." +pElement.getAttribute("id");
-                                                String value = pElement.getTextContent();
+    			}                         
+    		}
+    		custTypesList.add(types);
+    	}
 
-                                                types.put(label, value);    
+    	return custTypesList;
+    }
+    
+    public Hashtable<String, String> getSettings(String type_name){
 
-                                      }                              
-                           }
-                   }
+    	NodeList nList = this.config.getElementsByTagName(type_name);
+    	Hashtable<String, String> types = new Hashtable<String, String>();   
 
-           return types;
+    	for (int temp = 0; temp < nList.getLength(); temp++) {
+
+    		Node nNode = nList.item(temp);
+
+    		if (nNode.getNodeType() == Node.ELEMENT_NODE) {
+
+    			Element eElement = (Element) nNode;
+    			NodeList pList = (NodeList) eElement.getElementsByTagName("property");    
+
+    			if ( eElement.getAttribute("id").toString() != "") {
+    				String label1 = eElement.getAttribute("id").toString() + "." + "id";
+    				String value2 = eElement.getAttribute("id").toString();
+    				types.put(label1, value2); 
+    			}
+
+    			if ( eElement.getAttribute("type").toString() != "") {
+    				String label1 = eElement.getAttribute("id").toString() + "." + "type";
+    				String value2 = eElement.getAttribute("type").toString();
+    				types.put(label1, value2); 
+    			}
+    			for (int temp2 = 0; temp2 < pList.getLength(); temp2++) {
+    				Node pNode = pList.item(temp2);
+    				Element pElement = (Element) pNode;
+    				String label = pElement.getAttribute("id");
+    				String value = pElement.getTextContent();
+    				types.put(label, value);    
+
+    			}                              
+    		}
+    	}
+
+    	return types;
     }
     
     
     
     
     public Hashtable getStations(){
-        
-        NodeList nList = this.config.getElementsByTagName("service_station");
-            Hashtable<String, String> types = new Hashtable<String, String>();   
 
-                       for (int temp = 0; temp < nList.getLength(); temp++) {
+    	NodeList nList = this.config.getElementsByTagName("service_station");
+    	Hashtable<String, String> types = new Hashtable<String, String>();   
 
-                           Node nNode = nList.item(temp);
-                           
-                         
+    	for (int temp = 0; temp < nList.getLength(); temp++) {
 
-                           if (nNode.getNodeType() == Node.ELEMENT_NODE) {
+    		Node nNode = nList.item(temp);
 
-                                   Element eElement = (Element) nNode;
-                                   NodeList qList = (NodeList) eElement.getElementsByTagName("assigned_queue");    
-                                   NodeList cList = (NodeList) eElement.getElementsByTagName("allowed_customer_type");
-                                   
-                                   if ( eElement.getAttribute("id").toString() != "") {
-                                        String label1 = eElement.getAttribute("id").toString() + "." + "id";
-                                        String value2 = eElement.getAttribute("id").toString();
-                                        types.put(label1, value2); 
-                                   }
-                                   
-                                    if ( eElement.getAttribute("type").toString() != "") {
-                                        String label1 = eElement.getAttribute("id").toString() + "." + "type";
-                                        String value2 = eElement.getAttribute("type").toString();
-                                        types.put(label1, value2); 
-                                   }
-                                    for (int temp2 = 0; temp2 < cList.getLength(); temp2++) {
-                                          Node pNode = cList.item(temp2);
-                                              Element pElement = (Element) pNode;
-                                              String label = eElement.getAttribute("id").toString() +  "." + pElement.getNodeName().toString()  +  "." + pElement.getAttribute("id").toString();
-                                              String value = pElement.getTextContent();
-                                              types.put(label, value);    
-                                    }   
-                                    
-                                    for (int temp2 = 0; temp2 < qList.getLength(); temp2++) {
-                                          Node qNode = qList.item(temp2);
-                                              Element qElement = (Element) qNode;
-                                              String label = eElement.getAttribute("id").toString() +  "." + qElement.getNodeName().toString()  +  "." + qElement.getAttribute("id").toString();
-                                              String value = qElement.getTextContent();
-                                              types.put(label, value);    
-                                    }
-                           }
-                   }
+    		if (nNode.getNodeType() == Node.ELEMENT_NODE) {
 
-           return types;
+    			Element eElement = (Element) nNode;
+    			NodeList qList = (NodeList) eElement.getElementsByTagName("assigned_queue");    
+    			NodeList cList = (NodeList) eElement.getElementsByTagName("allowed_customer_type");
+
+    			if ( eElement.getAttribute("id").toString() != "") {
+    				String label1 = eElement.getAttribute("id").toString() + "." + "id";
+    				String value2 = eElement.getAttribute("id").toString();
+    				types.put(label1, value2); 
+    			}
+
+    			if ( eElement.getAttribute("type").toString() != "") {
+    				String label1 = eElement.getAttribute("id").toString() + "." + "type";
+    				String value2 = eElement.getAttribute("type").toString();
+    				types.put(label1, value2); 
+    			}
+    			for (int temp2 = 0; temp2 < cList.getLength(); temp2++) {
+    				Node pNode = cList.item(temp2);
+    				Element pElement = (Element) pNode;
+    				String label = eElement.getAttribute("id").toString() +  "." + pElement.getNodeName().toString()  +  "." + pElement.getAttribute("id").toString();
+    				String value = pElement.getTextContent();
+    				types.put(label, value);    
+    			}   
+
+    			for (int temp2 = 0; temp2 < qList.getLength(); temp2++) {
+    				Node qNode = qList.item(temp2);
+    				Element qElement = (Element) qNode;
+    				String label = eElement.getAttribute("id").toString() +  "." + qElement.getNodeName().toString()  +  "." + qElement.getAttribute("id").toString();
+    				String value = qElement.getTextContent();
+    				types.put(label, value);    
+    			}
+    		}
+    	}
+
+    	return types;
     }
-    
-
-
-    //    public String asXML(){
-//        return this.config.asXML();
-//    }
-    
-
-    
-    
-//    public ArrayList<String> types(){
-//        //List list = this.config.selectNodes("//types");
-//        ArrayList<String> types =new ArrayList();
-//        Element root = config.getRootElement();
-//           // iterate through child elements of root with element name "foo"
-//        for ( Iterator i = root.elementIterator("types"); i.hasNext(); ) {
-//            Element type = (Element) i.next();
-//            
-//            
-//            
-//             System.out.println(type.getName());
-//            types.add(type.getStringValue());
-//        }
-//       
-//       return types;
-//    }
-//    
-//    
-//    public void bar(Document document) throws DocumentException {
-//
-//        Element root = document.getRootElement();
-//
-//        // iterate through child elements of root
-//        for ( Iterator i = root.elementIterator(); i.hasNext(); ) {
-//            Element element = (Element) i.next();
-//            // do something
-//        }
-//
-//        // iterate through child elements of root with element name "foo"
-//        for ( Iterator i = root.elementIterator( "foo" ); i.hasNext(); ) {
-//            Element foo = (Element) i.next();
-//            // do something
-//        }
-//
-//        // iterate through attributes of root 
-//        for ( Iterator i = root.attributeIterator(); i.hasNext(); ) {
-//            Attribute attribute = (Attribute) i.next();
-//            // do something
-//        }
-//     }
-    
     
 }

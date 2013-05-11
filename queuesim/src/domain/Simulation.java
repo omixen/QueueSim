@@ -4,6 +4,8 @@
  */
 package domain;
 import java.util.ArrayList;
+import java.util.Enumeration;
+import java.util.Iterator;
 import java.util.Set;
 import java.util.Hashtable;
 /**
@@ -16,17 +18,37 @@ public class Simulation {
     private String configpath;
     private Dispatcher dispatcher;
     private ArrayList<ServiceStation> stations;
+    private ArrayList<Queue> queues;
     private Config config;
+    
+    private ArrayList<Hashtable<String, String>> customerTypesBuilder;
+    private ArrayList<String> queueIDs;
+    private Hashtable<String, ArrayList<String>> queueTypes;
+    private ArrayList<String> ssIDs;
+    private Hashtable<String, ArrayList<String>>  ssQueues;
+    private Hashtable<String, ArrayList<String>> ssTypes;
+    private Hashtable<String, String> settings;
     
     public Simulation(String config) {
         
-        try {
-            
+        try {  
             this.configpath = config;
-            this.dispatcher = new SimpleDispatcher(1, 10);
             this.config = new Config(this.configpath);
+            this.dispatcher = new SimpleDispatcher(0, 1);
             this.stations = new ArrayList<ServiceStation>();
-            
+            this.queues = new ArrayList<Queue>();
+            //Holds values pulled from XML value that are used to create CustomerType objects
+        	customerTypesBuilder = new ArrayList<Hashtable<String, String>>();
+        	//Holds values pulled from XML value that are used to create Queue objects
+        	queueIDs = new ArrayList<String>();
+        	//Holds the customer types accepted by each queue
+        	queueTypes = new Hashtable<String, ArrayList<String>>();
+        	//ArrayList with service station IDs
+        	ssIDs = new ArrayList<String>();
+        	//Hashtable <String, ArrayList> with queues and customer types
+        	ssQueues = new Hashtable<String, ArrayList<String>> ();
+        	ssTypes = new Hashtable<String, ArrayList<String>>();
+        	
         } catch (Exception e){
             
              System.out.println(e.getMessage());
@@ -34,86 +56,186 @@ public class Simulation {
             
         
     }
-    
-    
 
-    public void build() {
-//              Hashtable station_types = this.config.stationTypes();
-////              
-//
-//                Set<String> keys = station_types.keySet();
-//                for(String key: keys){
-//                    System.out.println("KEY: "+key+" Value:"+station_types.get(key));
-//                    if ( key.matches(".*/.id.*") == true){
-//                        
-//                        
-//                    }
-//                }
-        
-        
-                Hashtable stations = this.config.stations();
-                Set<String> keys3 = stations.keySet();
-                for(String key: keys3){
-                    //System.out.println("KEY: "+key+" Value:"+stations.get(key));
-                    
-                    if ( key.matches(".*.id.*") == true){
-                        
-                        ServiceStation s = new ServiceStation();
-                        this.stations.add(s);
-                    }  
-                }
-        
-             
-               System.out.println(this.stations);
-//                
-//                Hashtable queues = this.config.queues();
-////              
-//
-//                Set<String> keys2 = queues.keySet();
-//                for(String key: keys2){
-//                    System.out.println("KEY: "+key+" Value:"+queues.get(key));
-//                }
-//        
-// 
-//                
-//                Hashtable settings = this.config.settings();
-////              
-//
-//                Set<String> keys4 = settings.keySet();
-//                for(String key: keys4){
-//                    System.out.println("KEY: "+key+" Value:"+settings.get(key));
-//                }
-//                
-                
-        
-//        Integer stationCount = 5;
-//        Integer queueCount = 5;
-        
-        // custtypes
-        // queuetypes
-        // 
-        
-        
-        // create queues
-        
+    public String getConfigpath() {
+		return configpath;
+	}
 
+	public void setConfigpath(String configpath) {
+		this.configpath = configpath;
+	}
 
-       // Create the queues
-//       for(Integer i = 0; i < queueCount; i++){
-//           
-//          Queue q = new Queue();
-//          
-//          this.dispatcher.addQueue(q);
-//  
-//       }
-        
+	public Dispatcher getDispatcher() {
+		return dispatcher;
+	}
+
+	public void setDispatcher(Dispatcher dispatcher) {
+		this.dispatcher = dispatcher;
+	}
+
+	public ArrayList<ServiceStation> getStations() {
+		return stations;
+	}
+
+	public void setStations(ArrayList<ServiceStation> stations) {
+		this.stations = stations;
+	}
+
+	public ArrayList<Queue> getQueues() {
+		return queues;
+	}
+
+	public void setQueues(ArrayList<Queue> queues) {
+		this.queues = queues;
+	}
+
+	public Config getConfig() {
+		return config;
+	}
+
+	public void setConfig(Config config) {
+		this.config = config;
+	}
+
+	public ArrayList<Hashtable<String, String>> getCustomerTypesBuilder() {
+		return customerTypesBuilder;
+	}
+
+	public void setCustomerTypesBuilder(
+			ArrayList<Hashtable<String, String>> customerTypesBuilder) {
+		this.customerTypesBuilder = customerTypesBuilder;
+	}
+
+	public ArrayList<String> getQueueIDs() {
+		return queueIDs;
+	}
+
+	public void setQueueIDs(ArrayList<String> queueBuilder) {
+		this.queueIDs = queueBuilder;
+	}
+
+	public Hashtable<String, ArrayList<String>> getQueueTypes() {
+		return queueTypes;
+	}
+
+	public void setQueueTypes(Hashtable<String, ArrayList<String>> queueTypes) {
+		this.queueTypes = queueTypes;
+	}
+
+	public ArrayList<String> getSsIDs() {
+		return ssIDs;
+	}
+
+	public void setSsIDs(ArrayList<String> ssIDs) {
+		this.ssIDs = ssIDs;
+	}
+
+	public Hashtable<String, ArrayList<String>>  getSsQueues() {
+		return ssQueues;
+	}
+
+	public void setSsQueues(Hashtable<String, ArrayList<String>>  ssQueues) {
+		this.ssQueues = ssQueues;
+	}
+
+	public Hashtable<String, ArrayList<String>> getSsTypes() {
+		return ssTypes;
+	}
+
+	public void setSsTypes(Hashtable<String, ArrayList<String>> ssTypes) {
+		this.ssTypes = ssTypes;
+	}
+
+	private void createDispatcher()
+	{
+		
+	}
+	
+	private void createCustomerTypes()
+	{
+		
+	}
+	
+	private void createQueues()
+	{
+		
+	}
+	
+	private void createServiceStations()
+	{
+		
+	}
+
+	public void build() {
+    	
+    	/*Build the CustomerTypes from XML file*/
+		customerTypesBuilder = config.customerTypes();
+    	//Holds the CustomerTypes build from XML file
+    	Hashtable<String, CustomerType> customerTable = new Hashtable<String, CustomerType>();
+    	//Individual CustomerType parameters used in constructor
+    	Iterator <Hashtable<String, String>> ctbIter = customerTypesBuilder.iterator();
+    	while(ctbIter.hasNext())
+    	{
+    		Hashtable<String, String> custProperties = ctbIter.next();
+    		customerTable.put(custProperties.get("name"), new CustomerType(custProperties.get("name"), 
+    				custProperties.get("description"),
+    				Integer.parseInt(custProperties.get("serviceTime")), 
+    				Integer.parseInt(custProperties.get("totalCustomers"))));
+    	}
+    	
+    	config.queues(queueIDs, queueTypes);
+    	Iterator<String> qIter = queueIDs.iterator();
+    	while(qIter.hasNext())
+    	{
+    		String stringID = qIter.next();
+    		queues.add(new Queue(stringID, queueTypes.get(stringID)));
+    	}
+    	
+    	config.stations(ssIDs, ssQueues, ssTypes);
+    	Iterator<String> ssIDIter = ssIDs.iterator();
+    	while(ssIDIter.hasNext())
+    	{
+    		String ssID = ssIDIter.next();
+    		ArrayList<Queue> queuesToAdd = new ArrayList<Queue>();
+    		ArrayList<String> alq = ssQueues.get(ssID);
+    		Iterator<String> alqIter = alq.iterator();
+    		while(alqIter.hasNext())
+    		{
+    			String ssq = alqIter.next();
+    			Iterator<Queue> queuesIter = queues.iterator();
+    			while(queuesIter.hasNext())
+    			{
+    				Queue qTemp = queuesIter.next();
+    				if(qTemp.getId().equals(ssq))
+    				{
+    					queuesToAdd.add(qTemp);
+    				}
+    			}
+    		}
+    		stations.add(new PriorityServiceStation(ssID, ssTypes.get(ssID),  queuesToAdd));
+    	}
+    	
+    	settings = config.settings();
+    	dispatcher.setCustomerTypes(customerTable);
+    	dispatcher.setMaxTicks(Long.parseLong(settings.get("timeout")));
+    	dispatcher.setQueues(getQueues());
+    	dispatcher.setSleepTime((long) (Float.parseFloat(settings.get("tick"))*1000));
+    	
+    	System.out.println("All objects created");
+
     }
     
-    // Maybe this could be runnable but i'm not familiar with it
     public void start(){
-        
-//        this.dispatcher.run();
-//        
+    		this.dispatcher.start();
+    		Iterator<ServiceStation> statIter = stations.iterator();
+    		while(statIter.hasNext())
+    		{
+    			PriorityServiceStation pss = (PriorityServiceStation) statIter.next();
+    			//pss.start();
+    			pss.run();
+    		}
+             
+             //dispatcher.run();
     } 
     
     

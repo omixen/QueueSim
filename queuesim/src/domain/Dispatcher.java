@@ -10,10 +10,11 @@ public abstract class Dispatcher implements Runnable {
     private float arrivalRate;
     private ArrayList<Queue> queues;
     private Hashtable<String, CustomerType> customerTypes;
-    private long sleepTime = 1000;
+    private long sleepTime = 2000;
     private boolean running = true;
     private long tick = 0;
-    private long maxTicks = 3600;
+    private long maxTicks = 30;
+    private Observer observer;
 
     public float getArrivalRate() {
         return arrivalRate;
@@ -48,6 +49,11 @@ public abstract class Dispatcher implements Runnable {
     public Hashtable<String, CustomerType> getCustomerTypes() {
         return this.customerTypes;
     }
+    
+    public void setCustomerTypes(Hashtable<String, CustomerType> customerTypes)
+    {
+    	this.customerTypes = customerTypes;
+    }
 
     public long getMaxTicks() {
         return maxTicks;
@@ -57,11 +63,19 @@ public abstract class Dispatcher implements Runnable {
         this.maxTicks = maxTicks;
     }
 
-    /*
+    public Observer getObserver() {
+		return observer;
+	}
+
+	public void setObserver(Observer observer) {
+		this.observer = observer;
+	}
+	
+	/*
      * Thread start and run
      */
 
-    public void start() {
+	public void start() {
         (new Thread(this)).start();
     }
 
@@ -82,6 +96,11 @@ public abstract class Dispatcher implements Runnable {
                 if(!this.hasCustomers() || this.tick >= this.getMaxTicks())
                 {
                     this.signalExit();
+                    /*Remove below*/
+                    if(!this.hasCustomers())
+                    	System.out.println("No more customers");
+                    else
+                    	System.out.println("Exceeded Ticks");
                 }
                 //sleep for next tick
                 Thread.sleep(this.sleepTime);
@@ -102,6 +121,8 @@ public abstract class Dispatcher implements Runnable {
     public void assignCustomers(Customer[] customers) {
         for(int i=0;i<customers.length;i++) {
             getQueue(customers[i].getType()).enqueue(customers[i]);
+            //Send message to Observer
+            sendMessage(getQueue(customers[i].getType()).getId(), customers[i].getType());
         }
     }
 
@@ -138,6 +159,11 @@ public abstract class Dispatcher implements Runnable {
             }
         }
         return false;
+    }
+    
+    private void sendMessage(String queueID, String customerType)
+    {
+    	observer.receiveMessage(new Message(tick, "1", queueID, customerType));
     }
 
     abstract public Customer[] dispatch(Long time);

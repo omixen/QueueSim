@@ -7,6 +7,7 @@ package domain;
  * name: short string that uniquely identifies this type
  * description: display name for this type
  * serviceTime: time used to service customer of this type in the appropriate service station
+ * totalCustomer: the maximum number of Customers a type can have in a spawn
  */
 public class CustomerType {
     private String name;

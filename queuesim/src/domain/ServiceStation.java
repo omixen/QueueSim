@@ -14,7 +14,7 @@ import java.util.UUID;
  *
  *
  */
-public class ServiceStation {
+public class ServiceStation implements Runnable{
     private String id;
 	private ArrayList<String> customerTypes;
 	private Customer customer;
@@ -31,7 +31,7 @@ public class ServiceStation {
         this.setId(id);
         this.setTypes(customerTypes);
         this.setQueues(queues);
-        this.setSleepTime(0);
+        this.setSleepTime(1000);
     }
 
     public String getId() {
@@ -103,6 +103,7 @@ public class ServiceStation {
     				{
     					tempCustomer = c;
     					chosenQueue = tempQueue;
+    					earliestArrival = c.getArrivalTime();
     				}
     			}
     		}
@@ -115,10 +116,13 @@ public class ServiceStation {
     	}
     }
     
+    public void start(){
+    	(new Thread(this)).start();
+    }
+    
     public void run() {
         try {
             while(open) {
-                //Long time = System.currentTimeMillis();
                 getNextCustomer();
                 Thread.sleep(this.sleepTime);
             }

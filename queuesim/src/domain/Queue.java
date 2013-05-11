@@ -66,6 +66,8 @@ public class Queue {
     public void enqueue(Customer customer) {
         if (customer != null) {
             customers.add(customer);
+            System.out.println("Enqueue Customer Arrival:"+customer.getArrivalTime()+", Priority:" +
+            		customer.getType() + ", ID:"+customer.getId()+", Queue:"+this.getId());
         }
     }
 
@@ -87,6 +89,21 @@ public class Queue {
            }
        }
        return null;
+   }
+   
+   /*
+    * Returns the first customer in the list regardless of type
+    */
+   public Customer topCustomer()
+   {
+	   if(this.getLength() != 0)
+	   {
+		   return customers.get(0);
+	   }
+	   else
+	   {
+		   return null;
+	   }
    }
 
    /*

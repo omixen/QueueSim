@@ -9,8 +9,8 @@ import java.util.Iterator;
  * for each customer type
  */
 public class SimpleDispatcher extends Dispatcher {
-    private int minCount = 0;
-    private int maxCount = 10;
+    private int minCount = 0; //Min number of customers of a certain type to create at spawn
+    private int maxCount = 10;//Max number of customers of a certain type to create at spawn
 
     public SimpleDispatcher(int minCount, int maxCount) {
         this.minCount = minCount;
