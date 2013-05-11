@@ -15,6 +15,12 @@ public class CustomerType {
     private int totalCustomers;
     private float dispatchingStake;
 
+    public CustomerType() {
+        this.setName("");
+        this.setDescription("");
+        this.setServiceTime(0);
+        this.setTotalCustomers(0);
+    }
     public CustomerType(String name, String description, int serviceTime, int totalCustomers) {
         this.setName(name);
         this.setDescription(description);

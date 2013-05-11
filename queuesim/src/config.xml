@@ -32,7 +32,6 @@ service_station types queues : assigning queues and types to service station
                 <property id="description">Regular Customer</property>
                 <property id="serviceTime">5</property>
                 <property id="totalCustomers">200</property>
-                <property id="description">Regular Customer</property>
             </customer_type>
         </customer_types>
     </types>
@@ -52,7 +51,7 @@ service_station types queues : assigning queues and types to service station
 
     <!-- Single Service Station -->
     <service_stations>
-        <service_station id="ss1" type="EXPRESS">        
+        <service_station id="ss1">
             <assigned_queue>queueA</assigned_queue>
             <assigned_queue>queueB</assigned_queue>
             <assigned_queue>queueC</assigned_queue>

@@ -72,6 +72,14 @@ public class Simulation implements Runnable {
         //init report
         report = new Report();
         report.numberOfServiceStations = allStations.size();
+
+        /*
+        try {
+            this.config = new Config(this.configFile);
+        }catch (Exception ex)
+        {
+            ex.printStackTrace();
+        }*/
     }
 
     public void start(){
