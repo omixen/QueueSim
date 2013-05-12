@@ -24,7 +24,15 @@ public abstract class Dispatcher implements Runnable {
         this.arrivalRate = arrivalRate;
     }
 
-    public float getSleepTime() {
+    public boolean isRunning() {
+		return running;
+	}
+
+	public void setRunning(boolean running) {
+		this.running = running;
+	}
+
+	public long getSleepTime() {
         return sleepTime;
     }
 
@@ -82,11 +90,10 @@ public abstract class Dispatcher implements Runnable {
     public void run() {
         try {
             while(running) {
-                //increase counter
-                this.tick++;
-
                 //create customers based on the time
-                Customer[] customers = this.dispatch(this.tick);
+                Customer[] customers = this.dispatch((this.tick * this.sleepTime));
+              //increase counter
+                this.tick++;
                 //assign customers to queues
                 if (customers != null && customers.length > 0) {
                     assignCustomers(customers);
@@ -121,8 +128,6 @@ public abstract class Dispatcher implements Runnable {
     public void assignCustomers(Customer[] customers) {
         for(int i=0;i<customers.length;i++) {
             getQueue(customers[i].getType()).enqueue(customers[i]);
-            //Send message to Observer
-            sendMessage(getQueue(customers[i].getType()).getId(), customers[i].getType());
         }
     }
 
@@ -159,11 +164,6 @@ public abstract class Dispatcher implements Runnable {
             }
         }
         return false;
-    }
-    
-    private void sendMessage(String queueID, String customerType)
-    {
-    	observer.receiveMessage(new Message(tick, "1", queueID, customerType));
     }
 
     abstract public Customer[] dispatch(Long time);

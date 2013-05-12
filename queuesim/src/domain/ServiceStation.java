@@ -19,8 +19,10 @@ public class ServiceStation implements Runnable{
 	private ArrayList<String> customerTypes;
 	private Customer customer;
 	private ArrayList<Queue> queues;
-	private long sleepTime = 1000;
+	private long sleepTime;
     private boolean open = true;
+    private int defaultSleep = 1000;
+    private Observer observer;
 	
 	public ServiceStation()
 	{
@@ -31,10 +33,18 @@ public class ServiceStation implements Runnable{
         this.setId(id);
         this.setTypes(customerTypes);
         this.setQueues(queues);
-        this.setSleepTime(1000);
+        this.setSleepTime(defaultSleep);
     }
 
-    public String getId() {
+    public Observer getObserver() {
+		return observer;
+	}
+
+	public void setObserver(Observer observer) {
+		this.observer = observer;
+	}
+
+	public String getId() {
         return id;
     }
 
@@ -124,7 +134,18 @@ public class ServiceStation implements Runnable{
         try {
             while(open) {
                 getNextCustomer();
+                if(customer != null)
+                {
+                	//adjust sleepTime to specific customer Type
+                	this.sleepTime =  customer.getServiceTime();
+                	observer.serviceMessage(customer.getArrivalTime());
+                }
+                else
+                {
+                	this.sleepTime = defaultSleep;
+                }
                 Thread.sleep(this.sleepTime);
+                customer = null;
             }
         } catch(InterruptedException ie) {
             ie.printStackTrace();

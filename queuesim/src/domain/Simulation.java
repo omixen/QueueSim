@@ -17,9 +17,11 @@ public class Simulation {
     
     private String configpath;
     private Dispatcher dispatcher;
+    private Observer observer;
     private ArrayList<ServiceStation> stations;
     private ArrayList<Queue> queues;
     private Config config;
+    private long sleepTime = 1000;
     
     private ArrayList<Hashtable<String, String>> customerTypesBuilder;
     private ArrayList<String> queueIDs;
@@ -28,6 +30,7 @@ public class Simulation {
     private Hashtable<String, ArrayList<String>>  ssQueues;
     private Hashtable<String, ArrayList<String>> ssTypes;
     private Hashtable<String, String> settings;
+    private Hashtable<String, CustomerType> customerTable;
     
     public Simulation(String config) {
         
@@ -148,30 +151,19 @@ public class Simulation {
 
 	private void createDispatcher()
 	{
-		
+		settings = config.settings();
+    	dispatcher.setCustomerTypes(customerTable);
+    	dispatcher.setMaxTicks(Long.parseLong(settings.get("timeout")));
+    	dispatcher.setQueues(getQueues());
+    	dispatcher.setSleepTime((long) (Float.parseFloat(settings.get("tick"))*1000));
 	}
 	
 	private void createCustomerTypes()
 	{
-		
-	}
-	
-	private void createQueues()
-	{
-		
-	}
-	
-	private void createServiceStations()
-	{
-		
-	}
-
-	public void build() {
-    	
-    	/*Build the CustomerTypes from XML file*/
+		/*Build the CustomerTypes from XML file*/
 		customerTypesBuilder = config.customerTypes();
     	//Holds the CustomerTypes build from XML file
-    	Hashtable<String, CustomerType> customerTable = new Hashtable<String, CustomerType>();
+    	customerTable = new Hashtable<String, CustomerType>();
     	//Individual CustomerType parameters used in constructor
     	Iterator <Hashtable<String, String>> ctbIter = customerTypesBuilder.iterator();
     	while(ctbIter.hasNext())
@@ -179,19 +171,30 @@ public class Simulation {
     		Hashtable<String, String> custProperties = ctbIter.next();
     		customerTable.put(custProperties.get("name"), new CustomerType(custProperties.get("name"), 
     				custProperties.get("description"),
-    				Integer.parseInt(custProperties.get("serviceTime")), 
+    				//Integer.parseInt(custProperties.get("serviceTime")), 
+    				(int)(Float.parseFloat(custProperties.get("serviceTime"))*1000),
     				Integer.parseInt(custProperties.get("totalCustomers"))));
     	}
-    	
-    	config.queues(queueIDs, queueTypes);
+	}
+	
+	private void createQueues()
+	{
+		config.queues(queueIDs, queueTypes);
     	Iterator<String> qIter = queueIDs.iterator();
     	while(qIter.hasNext())
     	{
     		String stringID = qIter.next();
     		queues.add(new Queue(stringID, queueTypes.get(stringID)));
     	}
-    	
-    	config.stations(ssIDs, ssQueues, ssTypes);
+    	for(Queue q: queues)
+    	{
+    		q.setObserver(observer);
+    	}
+	}
+	
+	private void createServiceStations()
+	{
+		config.stations(ssIDs, ssQueues, ssTypes);
     	Iterator<String> ssIDIter = ssIDs.iterator();
     	while(ssIDIter.hasNext())
     	{
@@ -214,30 +217,64 @@ public class Simulation {
     		}
     		stations.add(new PriorityServiceStation(ssID, ssTypes.get(ssID),  queuesToAdd));
     	}
-    	
-    	settings = config.settings();
-    	dispatcher.setCustomerTypes(customerTable);
-    	dispatcher.setMaxTicks(Long.parseLong(settings.get("timeout")));
-    	dispatcher.setQueues(getQueues());
-    	dispatcher.setSleepTime((long) (Float.parseFloat(settings.get("tick"))*1000));
-    	
-    	System.out.println("All objects created");
+    	for(ServiceStation s: stations)
+    	{
+    		s.setObserver(observer);
+    	}
+    	observer.setNumberOfServiceStations(stations.size());
+	}
+	
+	private void createObserver()
+	{
+		observer = new Observer(this.getDispatcher().getSleepTime());
+		dispatcher.setObserver(observer);
+	}
+	
+	public void build() {
+		createCustomerTypes();
+		createDispatcher();
+		createObserver();
+		createQueues();
+		createServiceStations();
 
     }
     
     public void start(){
+    		System.out.println("Simulation has started");
     		this.dispatcher.start();
     		Iterator<ServiceStation> statIter = stations.iterator();
     		while(statIter.hasNext())
     		{
     			PriorityServiceStation pss = (PriorityServiceStation) statIter.next();
-    			//pss.start();
-    			pss.run();
+    			pss.start();
+    			//pss.run();
     		}
              
              //dispatcher.run();
+    		while(dispatcher.isRunning() || checkQueues())
+    		{
+    			try {
+					Thread.sleep(this.sleepTime);
+				} catch (InterruptedException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
+    		}
+    		System.out.println("Simulation has ended");
+    		observer.writeReport();
+    		return;
     } 
     
-    
+    private boolean checkQueues()
+    {
+    	for(Queue q: queues)
+    	{
+    		if(q.getLength() > 0)
+    		{
+    			return true;
+    		}
+    	}
+    	return false;
+    }
     
 }

@@ -70,7 +70,7 @@ public class CustomerType {
         }
         Customer[] customers = new Customer[number];
         for(int i=0;i<number;i++) {
-            customers[i] = new Customer(this.getName(), arrivalTime);
+            customers[i] = new Customer(this.getName(), arrivalTime, serviceTime);
         }
         this.setTotalCustomers(this.getTotalCustomers()-number);
         return customers;

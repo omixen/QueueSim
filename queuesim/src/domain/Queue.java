@@ -11,6 +11,7 @@ public class Queue {
     private String id;
     private ArrayList<Customer> customers;
     private ArrayList<String> customerTypes;
+    private Observer observer;
 
     public Queue() {
         this(UUID.randomUUID().toString(), new ArrayList<String>());
@@ -22,7 +23,15 @@ public class Queue {
         this.setCustomers(new ArrayList<Customer>());
     }
 
-    public String getId() {
+    public Observer getObserver() {
+		return observer;
+	}
+
+	public void setObserver(Observer observer) {
+		this.observer = observer;
+	}
+
+	public String getId() {
         return id;
     }
 
@@ -66,6 +75,7 @@ public class Queue {
     public void enqueue(Customer customer) {
         if (customer != null) {
             customers.add(customer);
+            observer.queueMessage(this.getId(), this.getCustomers().size());
             System.out.println("Enqueue Customer Arrival:"+customer.getArrivalTime()+", Priority:" +
             		customer.getType() + ", ID:"+customer.getId()+", Queue:"+this.getId());
         }

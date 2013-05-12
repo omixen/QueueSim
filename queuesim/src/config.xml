@@ -21,7 +21,7 @@ service_station types queues : assigning queues and types to service station
     <settings>    
             <property id="begin_time">value</property>
             <property id="time_unit">1</property>
-            <property id="tick">1.95</property>
+            <property id="tick">1.5</property>
             <property id="timeout">60</property>
             <property id="dispatching_policy">default</property>
     </settings>
@@ -30,18 +30,18 @@ service_station types queues : assigning queues and types to service station
         <customer_types>
             <customer_type id="priority1">
                 <property id="description">Priority 1 Customer</property>
-                <property id="serviceTime">5</property>
-                <property id="totalCustomers">50</property>
+                <property id="serviceTime">3</property>
+                <property id="totalCustomers">15</property>
             </customer_type>
             <customer_type id="priority2">
                 <property id="description">Priority 2 Customer</property>
-                <property id="serviceTime">5</property>
-                <property id="totalCustomers">50</property>
+                <property id="serviceTime">1</property>
+                <property id="totalCustomers">5</property>
             </customer_type>
             <customer_type id="priority3">
                 <property id="description">Priority 3 Customer</property>
-                <property id="serviceTime">5</property>
-                <property id="totalCustomers">50</property>
+                <property id="serviceTime">.5</property>
+                <property id="totalCustomers">10</property>
             </customer_type>
         </customer_types>
     </types>

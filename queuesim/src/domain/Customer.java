@@ -13,11 +13,13 @@ public class Customer {
     private String id;
     private String type;
     private long arrivalTime;
+    private int serviceTime;
 
-    public Customer(String type, long arrivalTime) {
+    public Customer(String type, long arrivalTime, int serviceTime) {
         this.setId(UUID.randomUUID().toString());
         this.setType(type);
         this.setArrivalTime(arrivalTime);
+        this.setServiceTime(serviceTime);
     }
 
     public String getId() {
@@ -48,7 +50,15 @@ public class Customer {
         this.arrivalTime = arrivalTime;
     }
     
-    public boolean equals(Object other)
+    public int getServiceTime() {
+		return serviceTime;
+	}
+
+	public void setServiceTime(int serviceTime) {
+		this.serviceTime = serviceTime;
+	}
+
+	public boolean equals(Object other)
     {
         if(this == other)
     		return true;
